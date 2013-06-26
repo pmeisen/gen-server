@@ -8,17 +8,6 @@
   The fully packed 'application' is available here;
   - http://ant-processenabler.meisen.net/downloads/ant-processenabler-1.0.0-SNAPSHOT.zip
   -->
-<project name="td-server" default="assemble">	
+<project name="gen-server" default="deploy">	
 	<import file="${ant.home}\resources\ant\library_main.xml"/>
-  
-  <macrodef name="resourceMapper">
-    <attribute name="resourceFolder" />
-    <attribute name="resourceFileName" />
-    <attribute name="resource" />
-    <attribute name="resourceType" />
-    
-    <sequential>
-      <!-- to be done -->
-    </sequential>
-  </macrodef>
 </project>
