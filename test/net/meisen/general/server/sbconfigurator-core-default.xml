@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+  
+  <!-- get the properties used for the whole configuration -->
+  <bean class="net.meisen.general.sbconfigurator.config.placeholder.SpringPropertyHolder">
+    <property name="locationSelector" value="server.properties" />
+  </bean>
+  <!-- we override the selector properties to make sure that no user-definition is loaded -->
+  <bean class="net.meisen.general.sbconfigurator.config.placeholder.SpringPropertyHolder">
+    <property name="properties">
+        <value>server.settings.selector=serverSettings-notexist.xml</value>
+    </property>
+  </bean>
+    
+  <!-- include the default configuration -->
+  <import resource="classpath:/net/meisen/general/sbconfigurator/sbconfigurator-core.xml"/>
+</beans>

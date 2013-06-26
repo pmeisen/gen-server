@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+
+  <!-- get the general settings -->
+  <bean id="serverSettingsManager" class="net.meisen.general.server.settings.DefaultServerSettingsManager" init-method="initialize" />
+  
+  <!-- get the settings used to start the server -->
+  <bean id="finalServerSettings" factory-bean="serverSettingsManager" factory-method="getServerSettings" class="net.meisen.general.server.api.IServerSettings"  />
+  
+  <!-- the instance of the server -->
+  <bean id="server" class="net.meisen.general.server.Server" />
+</beans>

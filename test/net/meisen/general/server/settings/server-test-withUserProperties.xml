@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<tdserver xmlns="http://timedata.meisen.net/tdserver/config" 
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://timedata.meisen.net/tdserver/config http://timedata.meisen.net/xsd/tdserver/tdserverConfig.xsd">
+
+  <connector port="${server.settings.defaultPort}" listener="${server.settings.defaultListener}" />
+</tdserver>

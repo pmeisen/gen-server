@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!-- 
+  From: http://www.w3schools.com/schema/schema_schema.asp
+
+  xmlns:xs="http://www.w3.org/2001/XMLSchema"
+    indicates that the elements and data types used in the schema come from the "http://www.w3.org/2001/XMLSchema" namespace. 
+    It also specifies that the elements and data types that come from the "http://www.w3.org/2001/XMLSchema" namespace should 
+    be prefixed with xs.
+
+  targetNamespace="..."
+    indicates that the elements defined by this schema come from the "..." namespace.
+
+  xmlns="..."
+    indicates that the default namespace is "...".
+
+  elementFormDefault="qualified"
+    indicates that any elements used by the XML instance document which were declared in this schema must be namespace 
+    qualified.
+  -->
+<xs:schema xmlns="http://timedata.meisen.net/tdserver/config" 
+           xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           targetNamespace="http://timedata.meisen.net/tdserver/config" elementFormDefault="qualified">
+  
+  <xs:simpleType name="idType">
+    <xs:restriction base="xs:string">
+      <xs:minLength value="1" />
+      <xs:whiteSpace value="collapse"/>
+      <xs:pattern value="[a-zA-Z][a-zA-Z0-9]*|RND\(\)"/>
+    </xs:restriction>
+  </xs:simpleType>
+  
+  <xs:simpleType name="listenerType">
+    <xs:restriction base="xs:string">
+      <xs:minLength value="1" />
+      <xs:whiteSpace value="collapse"/>
+      <xs:pattern value="[a-zA-Z][a-zA-Z0-9\.]*"/>
+    </xs:restriction>
+  </xs:simpleType>
+  
+  <xs:simpleType name="portType">
+    <xs:restriction base="xs:integer">
+      <xs:minInclusive value='1'/>
+      <xs:maxInclusive value='65535'/>
+    </xs:restriction>
+  </xs:simpleType>
+  
+  <xs:simpleType name="enableType">
+    <xs:restriction base="xs:boolean" />
+  </xs:simpleType>
+  
+  <xs:complexType name="connectorType">
+    <xs:attribute name="id" type="idType" default="RND()" />
+    <xs:attribute name="listener" type="listenerType" default="HTTP" />
+    <xs:attribute name="enable" type="enableType" default="true" />
+    <xs:attribute name="port" type="portType" use="required" />
+  </xs:complexType>
+  
+  <xs:complexType name="rootType">
+    <xs:sequence>
+      <xs:choice minOccurs="0" maxOccurs="1">
+        <xs:any namespace="http://timedata.meisen.net/tdserver/config/default" minOccurs="0" maxOccurs="1" />
+      </xs:choice>
+      <xs:choice minOccurs="0" maxOccurs="unbounded">
+        <xs:element name="connector" type="connectorType" />
+      </xs:choice>
+    </xs:sequence>
+    <xs:attribute name="id" type="xs:string" default="" />
+  </xs:complexType>
+  
+  <xs:element name="tdserver" type="rootType" />
+</xs:schema>
