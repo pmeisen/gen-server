@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 
-<tdserver xmlns="http://timedata.meisen.net/tdserver/config" 
-          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-          xmlns:tdscd="http://timedata.meisen.net/tdserver/config/default"
-          xsi:schemaLocation="http://timedata.meisen.net/tdserver/config http://timedata.meisen.net/xsd/tdserver/tdserverConfig.xsd
-                              http://timedata.meisen.net/tdserver/config/default http://timedata.meisen.net/xsd/tdserver/tdserverDefaultConfig.xsd">
+<server xmlns="http://dev.meisen.net/server/config" 
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns:tdscd="http://dev.meisen.net/server/config/default"
+        xsi:schemaLocation="http://dev.meisen.net/server/config http://dev.meisen.net/xsd/server/serverConfig.xsd
+                            http://dev.meisen.net/server/config/default http://dev.meisen.net/xsd/server/serverDefaultConfig.xsd">
 
   <!-- mark this one to be the default configuration, 
        this should only be set in one ServerSettings XML-file -->
   <tdscd:defaultMarker />
 
   <connector id="DEFAULT" port="${server.settings.defaultPort}" listener="${server.settings.defaultListener}" />
-</tdserver>
+</server>

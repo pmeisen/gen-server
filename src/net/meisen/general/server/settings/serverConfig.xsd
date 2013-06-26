@@ -18,9 +18,9 @@
     indicates that any elements used by the XML instance document which were declared in this schema must be namespace 
     qualified.
   -->
-<xs:schema xmlns="http://timedata.meisen.net/tdserver/config" 
+<xs:schema xmlns="http://dev.meisen.net/server/config" 
            xmlns:xs="http://www.w3.org/2001/XMLSchema"
-           targetNamespace="http://timedata.meisen.net/tdserver/config" elementFormDefault="qualified">
+           targetNamespace="http://dev.meisen.net/server/config" elementFormDefault="qualified">
   
   <xs:simpleType name="idType">
     <xs:restriction base="xs:string">
@@ -59,7 +59,7 @@
   <xs:complexType name="rootType">
     <xs:sequence>
       <xs:choice minOccurs="0" maxOccurs="1">
-        <xs:any namespace="http://timedata.meisen.net/tdserver/config/default" minOccurs="0" maxOccurs="1" />
+        <xs:any namespace="http://dev.meisen.net/server/config/default" minOccurs="0" maxOccurs="1" />
       </xs:choice>
       <xs:choice minOccurs="0" maxOccurs="unbounded">
         <xs:element name="connector" type="connectorType" />
@@ -68,5 +68,5 @@
     <xs:attribute name="id" type="xs:string" default="" />
   </xs:complexType>
   
-  <xs:element name="tdserver" type="rootType" />
+  <xs:element name="server" type="rootType" />
 </xs:schema>

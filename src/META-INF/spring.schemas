@@ -1,2 +1,2 @@
-http\://timedata.meisen.net/xsd/tdserver/tdserverConfig.xsd=net/meisen/general/server/settings/serverConfig.xsd
-http\://timedata.meisen.net/xsd/tdserver/tdserverDefaultConfig.xsd=net/meisen/general/server/settings/serverDefaultConfig.xsd
+http\://dev.meisen.net/xsd/server/serverConfig.xsd=net/meisen/general/server/settings/serverConfig.xsd
+http\://dev.meisen.net/xsd/server/serverDefaultConfig.xsd=net/meisen/general/server/settings/serverDefaultConfig.xsd
