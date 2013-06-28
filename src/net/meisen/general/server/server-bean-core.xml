@@ -9,6 +9,11 @@
   <!-- get the settings used to start the server -->
   <bean id="finalServerSettings" factory-bean="serverSettingsManager" factory-method="getServerSettings" class="net.meisen.general.server.api.IServerSettings"  />
   
+  <!-- the parser used to parse values of extensions -->
+  <bean id="serverStringParser" class="net.meisen.general.sbconfigurator.helper.StringParser">
+    <constructor-arg value="${server.settings.defaultDateFormat}" />
+  </bean>
+  
   <!-- the instance of the server -->
   <bean id="server" class="net.meisen.general.server.Server" />
 </beans>

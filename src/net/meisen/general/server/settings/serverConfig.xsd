@@ -50,8 +50,11 @@
   </xs:simpleType>
   
   <xs:complexType name="connectorType">
+    <xs:choice minOccurs="0" maxOccurs="1">
+      <xs:any namespace="http://dev.meisen.net/server/config/extension" />
+    </xs:choice>
     <xs:attribute name="id" type="idType" default="RND()" />
-    <xs:attribute name="listener" type="listenerType" default="HTTP" />
+    <xs:attribute name="listener" type="listenerType" default="DUMMY" />
     <xs:attribute name="enable" type="enableType" default="true" />
     <xs:attribute name="port" type="portType" use="required" />
   </xs:complexType>

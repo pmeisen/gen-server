@@ -3,23 +3,45 @@ package net.meisen.general.server.settings;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+
+import net.meisen.general.genmisc.exceptions.registry.IExceptionRegistry;
+import net.meisen.general.server.api.IConnectorValidator;
+import net.meisen.general.server.api.IListener;
 import net.meisen.general.server.api.IServerSettings;
+import net.meisen.general.server.exceptions.ServerSettingsException;
+import net.meisen.general.server.settings.listener.ListenerFactory;
 import net.meisen.general.server.settings.pojos.Connector;
 
 public class DefaultServerSettings implements IServerSettings {
+	private final static Logger LOG = LoggerFactory
+			.getLogger(DefaultServerSettings.class);
+
+	@Autowired
+	@Qualifier("exceptionRegistry")
+	private IExceptionRegistry exceptionRegistry;
+
+	@Autowired
+	@Qualifier("listenerFactory")
+	private ListenerFactory listenerFactory;
 
 	private List<Connector> connectorSettings = new ArrayList<Connector>();
 
 	private boolean defaultSettings = false;
+	private boolean failOnUnresolvableListeners = true;
 
 	public void addConnectorSetting(final Connector connectorSetting) {
 		connectorSettings.add(connectorSetting);
 	}
 
-	public void addConnectorSettings(
-			final Collection<Connector> connectorSettings) {
+	public void addConnectorSettings(final Collection<Connector> connectorSettings) {
 		this.connectorSettings.addAll(connectorSettings);
 	}
 
@@ -35,5 +57,55 @@ public class DefaultServerSettings implements IServerSettings {
 	@Override
 	public boolean isDefaultSettings() {
 		return defaultSettings;
+	}
+
+	@Override
+	public boolean validate() throws ServerSettingsException {
+		final Set<Integer> usedPorts = new HashSet<Integer>();
+
+		// check each connector
+		for (final Connector connector : connectorSettings) {
+			if (!usedPorts.add(connector.getPort())) {
+				exceptionRegistry.throwException(ServerSettingsException.class, 1000,
+						connector.getPort(), (defaultSettings ? "default-" : ""));
+			}
+
+			// get the listener
+			final IListener listener = listenerFactory.createListener(connector
+					.getListener());
+			if (listener == null) {
+				if (isFailOnUnresolvableListeners()) {
+					exceptionRegistry.throwException(ServerSettingsException.class, 1002,
+							connector.getListener(), connector.toString());
+				} else {
+					if (LOG.isInfoEnabled()) {
+						LOG.info("The connector '" + connector.toString()
+								+ "' was disabled, because the listener '"
+								+ connector.getListener() + "' cannot be created.");
+					}
+
+					connector.setEnable(false);
+				}
+			} else if (listener instanceof IConnectorValidator) {
+				final IConnectorValidator validator = (IConnectorValidator) listener;
+
+				// validate it, it can throw it's own exception but if not we should
+				// have one as well
+				if (!validator.validate(connector)) {
+					exceptionRegistry.throwException(ServerSettingsException.class, 1001,
+							connector.toString());
+				}
+			}
+		}
+
+		return true;
+	}
+
+	public boolean isFailOnUnresolvableListeners() {
+		return failOnUnresolvableListeners;
+	}
+
+	public void setFailOnUnresolvableListeners(boolean failOnUnresolvableListeners) {
+		this.failOnUnresolvableListeners = failOnUnresolvableListeners;
 	}
 }

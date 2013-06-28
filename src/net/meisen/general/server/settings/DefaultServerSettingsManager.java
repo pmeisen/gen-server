@@ -43,12 +43,21 @@ public class DefaultServerSettingsManager implements IServerSettingsManager {
 		} else if (!defaultSettings.isDefaultSettings()) {
 			exceptionRegistry.throwException(ServerInitializeException.class, 1001,
 					defaultSettings.getClass().getName());
+		} else if (!defaultSettings.validate()) {
+			// nothing to do the validation can throw the exception, if it's not
+			// validated and comes here we should just give a general message, to be
+			// sure
 		} else if (userSettings == null) {
 			// if we don't have any user-settings we use the default
 			mergedSettings = defaultSettings;
 		} else if (userSettings.isDefaultSettings()) {
 			exceptionRegistry.throwException(ServerInitializeException.class, 1002,
 					userSettings.getClass().getName());
+		} else if (!userSettings.validate()) {
+			// nothing to do the validation can throw the exception, if it's not
+			// validated and comes here we should just give a general message, to be
+			// sure
+
 		} else {
 			// we have to merge the default and user-settings
 			mergedSettings = mergeSettings(defaultSettings, userSettings);
@@ -76,7 +85,9 @@ public class DefaultServerSettingsManager implements IServerSettingsManager {
 
 				// add the port as used, even if it is disabled we won't use it later
 				usedPorts.add(connector.getPort());
-				usedUserListener.add(listenerClass);
+				if (listenerClass != null) {
+					usedUserListener.add(listenerClass);
+				}
 
 				// add the connector if it's enabled
 				if (connector.isEnable()) {
@@ -90,7 +101,7 @@ public class DefaultServerSettingsManager implements IServerSettingsManager {
 				final Class<? extends IListener> listenerClass = listenerFactory
 						.resolve(listener);
 
-				if (!usedPorts.contains(connector.getPort())
+				if (listenerClass != null && !usedPorts.contains(connector.getPort())
 						&& !usedUserListener.contains(listenerClass)
 						&& connector.isEnable()) {
 					mergedSettings.addConnectorSetting(connector);

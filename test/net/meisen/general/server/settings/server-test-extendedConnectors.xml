@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<server xmlns="http://dev.meisen.net/server/config" 
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns:ed="http://dev.meisen.net/server/config/extension"
+        xsi:schemaLocation="http://dev.meisen.net/server/config http://dev.meisen.net/xsd/server/serverConfig.xsd
+                            http://dev.meisen.net/server/config/extension http://dev.meisen.net/xsd/server/serverConfigExtension.xsd">
+
+  <connector port="666" listener="DUMMY">
+  	<ed:extension>
+  	  <firstEntry first="1" second="2" third="true" fourth="false" />
+  	  <secondEntry>
+  	    <subEntry attribute1="hello" attribute2="world" />
+  	  </secondEntry>
+  	  <thirdEntry a="A" b="B" c="C" d="D">
+  	    <subEntry attribute1="hello1" attribute2="world1">
+  	      <subSubEntry>DeepUnder</subSubEntry>
+  	    </subEntry>
+  	    <subEntry attribute1="hello2" attribute2="world2" />
+  	  </thirdEntry>
+  	</ed:extension>
+
+  </connector>
+</server>

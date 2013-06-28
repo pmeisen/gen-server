@@ -14,6 +14,8 @@
       <map key-type="java.lang.Class" value-type="java.lang.Class">
         <entry key="net.meisen.general.server.exceptions.ServerInitializeException" 
                value="net.meisen.general.genmisc.exceptions.catalog.DefaultLocalizedExceptionCatalog" />
+        <entry key="net.meisen.general.server.exceptions.ServerSettingsException" 
+               value="net.meisen.general.genmisc.exceptions.catalog.DefaultLocalizedExceptionCatalog" />       
       </map>
     </property>
  </bean>

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<xs:schema xmlns="http://dev.meisen.net/server/config/extension" 
+           xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           targetNamespace="http://dev.meisen.net/server/config/extension" elementFormDefault="qualified">
+  <xs:element name="extension">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:any minOccurs="0" maxOccurs="unbounded" processContents="lax" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<server xmlns="http://dev.meisen.net/server/config" 
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://dev.meisen.net/server/config http://dev.meisen.net/xsd/server/serverConfig.xsd">
+
+  <connector port="${server.settings.defaultPort}" listener="${server.settings.defaultListener}" />
+</server>

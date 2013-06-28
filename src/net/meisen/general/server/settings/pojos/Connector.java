@@ -1,19 +1,10 @@
 package net.meisen.general.server.settings.pojos;
 
-public class Connector {
+public class Connector extends Extension {
 
-	private String id = null;
 	private String listener;
 	private int port = -1;
 	private boolean enable = true;
-
-	public String getId() {
-		return id;
-	}
-
-	public void setId(final String id) {
-		this.id = id;
-	}
 
 	public int getPort() {
 		return port;
@@ -39,6 +30,7 @@ public class Connector {
 		this.enable = enable;
 	}
 
+	@Override
 	public String toString() {
 		final String l = getListener();
 		final String suffix = " on port " + getPort() + " ('"

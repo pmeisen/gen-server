@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<server xmlns="http://dev.meisen.net/server/config" 
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://dev.meisen.net/server/config http://dev.meisen.net/xsd/server/serverConfig.xsd">
+
+  <connector port="666" listener="DUMMY" />
+  <connector port="777" listener="DUMMY" />
+  <connector port="888" listener="DUMMY" />
+  
+  <!-- duplicate on the same port -->
+  <connector port="888" listener="DUMMY" />
+</server>

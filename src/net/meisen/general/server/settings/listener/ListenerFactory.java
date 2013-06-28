@@ -7,14 +7,30 @@ import java.util.Map.Entry;
 import net.meisen.general.genmisc.types.Classes;
 import net.meisen.general.server.api.IListener;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class ListenerFactory {
+	private final static Logger LOG = LoggerFactory
+			.getLogger(ListenerFactory.class);
+
 	public Map<String, Class<? extends IListener>> listeners = new HashMap<String, Class<? extends IListener>>();
 
 	private String defaultListener;
 
 	public void registerNamedListener(final String name,
 			final Class<? extends IListener> listenerClazz) {
-		listeners.put(name.toUpperCase(), listenerClazz);
+		final Class<? extends IListener> oldListener = listeners.put(
+				name.toUpperCase(), listenerClazz);
+
+		// do some logging if we override another one with the same name
+		if (oldListener != null && !oldListener.equals(listenerClazz)) {
+			if (LOG.isWarnEnabled()) {
+				LOG.warn("The listener '" + name
+						+ "' was defined multiple times. The implementation '"
+						+ listenerClazz + "' overrides the '" + oldListener + "'");
+			}
+		}
 	}
 
 	public void registerNamedListeners(

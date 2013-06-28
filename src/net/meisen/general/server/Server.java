@@ -5,6 +5,7 @@ import java.util.List;
 
 import net.meisen.general.genmisc.exceptions.registry.IExceptionRegistry;
 import net.meisen.general.sbconfigurator.ConfigurationCoreSettings;
+import net.meisen.general.sbconfigurator.helper.SpringHelper;
 import net.meisen.general.server.api.IListener;
 import net.meisen.general.server.api.IServerSettings;
 import net.meisen.general.server.settings.listener.ListenerFactory;
@@ -39,7 +40,7 @@ public class Server {
 		for (final Connector c : finalServerSettings.getConnectorSettings()) {
 			final IListener listener = listenerFactory
 					.createListener(c.getListener());
-			
+
 			// check if we have a listener, otherwise invalid configuration
 			if (listener == null) {
 				// exception
@@ -81,10 +82,27 @@ public class Server {
 	public static Server createServer(final String coreConfig) {
 
 		// load the coreSettings
-		final ConfigurationCoreSettings settings = ConfigurationCoreSettings
-				.loadCoreSettings(coreConfig, Server.class);
+		try {
+			final ConfigurationCoreSettings settings = ConfigurationCoreSettings
+					.loadCoreSettings(coreConfig, Server.class);
 
-		return settings.getConfiguration().getModule("server");
+			return settings.getConfiguration().getModule("server");
+		} catch (final RuntimeException e) {
+			// spring errors are hard to understand, let's get back to the normal
+			// exception and forget the spring exceptions
+			final RuntimeException noneSpringException = SpringHelper
+					.getNoneSpringBeanException(e, RuntimeException.class);
+
+			if (noneSpringException == null) {
+				throw (RuntimeException) e;
+			} else {
+				if (LOG.isWarnEnabled()) {
+					LOG.warn("Removed SpringExceptions", e);
+				}
+
+				throw noneSpringException;
+			}
+		}
 	}
 
 	public static void main(final String[] args) {
