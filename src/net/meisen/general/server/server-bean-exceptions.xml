@@ -7,8 +7,8 @@
   <bean id="exceptionRegistry" class="net.meisen.general.genmisc.exceptions.registry.DefaultExceptionRegistry" />
     
   <!-- add the catalogs to the exceptionsRegistry -->
-  <bean id="exceptionRegistryMethodInvoker" class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
-    <property name="targetObject"><ref local="exceptionRegistry" /></property>
+  <bean class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
+    <property name="targetObject"><ref bean="exceptionRegistry" /></property>
     <property name="targetMethod" value="addExceptionCatalogsByClass" />
     <property name="arguments">
       <map key-type="java.lang.Class" value-type="java.lang.Class">
@@ -18,5 +18,5 @@
                value="net.meisen.general.genmisc.exceptions.catalog.DefaultLocalizedExceptionCatalog" />       
       </map>
     </property>
- </bean>
+  </bean>
 </beans>

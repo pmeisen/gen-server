@@ -41,4 +41,9 @@ public class DummyListener implements IListener, IConnectorValidator {
 			throws ServerSettingsException {
 		return true;
 	}
+
+	@Override
+	public void close() {
+	// nothing to do
+	}
 }

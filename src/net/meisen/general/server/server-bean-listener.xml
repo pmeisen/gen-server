@@ -11,7 +11,7 @@
   </bean>
   
   <!-- add the named listeners to the listenerFactory -->
-  <bean id="listenerFactoryMethodInvoker" class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
+  <bean class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
     <property name="targetObject"><ref bean="listenerFactory" /></property>
     <property name="targetMethod" value="registerNamedListeners" />
     <property name="arguments">
