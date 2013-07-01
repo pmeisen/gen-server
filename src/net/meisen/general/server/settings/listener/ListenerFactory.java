@@ -5,10 +5,13 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import net.meisen.general.genmisc.types.Classes;
+import net.meisen.general.sbconfigurator.api.IConfiguration;
 import net.meisen.general.server.api.IListener;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 
 public class ListenerFactory {
 	private final static Logger LOG = LoggerFactory
@@ -17,6 +20,10 @@ public class ListenerFactory {
 	public Map<String, Class<? extends IListener>> listeners = new HashMap<String, Class<? extends IListener>>();
 
 	private String defaultListener;
+
+	@Autowired
+	@Qualifier(IConfiguration.coreConfigurationId)
+	private IConfiguration configuration;
 
 	public void registerNamedListener(final String name,
 			final Class<? extends IListener> listenerClazz) {
@@ -84,13 +91,7 @@ public class ListenerFactory {
 		if (listenerClazz == null) {
 			return null;
 		} else {
-
-			// create the listener
-			try {
-				return listenerClazz.newInstance();
-			} catch (final Exception e) {
-				return null;
-			}
+			return configuration.createInstance(listenerClazz);
 		}
 	}
 }

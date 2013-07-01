@@ -85,7 +85,7 @@ public class Server {
 		try {
 			final ConfigurationCoreSettings settings = ConfigurationCoreSettings
 					.loadCoreSettings(coreConfig, Server.class);
-
+			
 			return settings.getConfiguration().getModule("server");
 		} catch (final RuntimeException e) {
 			// spring errors are hard to understand, let's get back to the normal
