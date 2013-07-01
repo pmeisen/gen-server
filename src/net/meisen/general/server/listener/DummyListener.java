@@ -20,7 +20,7 @@ public class DummyListener implements IListener, IConnectorValidator {
 			.getLogger(DummyListener.class);
 
 	@Override
-	public void initialize(final int port) {
+	public void initialize(final Connector connector) {
 		if (LOG.isWarnEnabled()) {
 			LOG.warn("Trying to initialize the dummy listener, this listener is just a dummy for the basic implementation of the server.");
 		}

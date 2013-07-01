@@ -53,7 +53,7 @@ public class Server {
 			}
 
 			// open the port to listen for connections
-			listener.initialize(c.getPort());
+			listener.initialize(c);
 
 			// add the listener because it initialized successfully
 			listeners.add(listener);

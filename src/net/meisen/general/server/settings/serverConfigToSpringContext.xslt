@@ -107,10 +107,12 @@
   <!-- template used to write an extension -->
   <xsl:template name="beanExtensionTemplate">
     <xsl:variable name="nodeName"><xsl:value-of select="local-name()"/></xsl:variable>
+    <xsl:variable name="nodeText"><xsl:value-of select="text()"/></xsl:variable>
   
     <bean class="net.meisen.general.server.settings.pojos.Extension">
       <property name="id" value="{$nodeName}" />
       
+      <!-- get the attributes -->
       <property name="properties">
         <map key-type="java.lang.String" value-type="java.lang.Object">
           <xsl:for-each select="./@*">
@@ -119,9 +121,15 @@
           
             <entry key="{$attrName}" value="{$attrValue}" />
           </xsl:for-each>
+          
+          <!-- check if we have any text and add it -->
+          <xsl:if test="normalize-space(text()) != ''">
+            <entry key="" value="{$nodeText}" />
+          </xsl:if>
         </map>
       </property>
       
+      <!-- get other elements -->
       <property name="extensions">
         <list>
           <xsl:for-each select="./*">

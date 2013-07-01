@@ -76,6 +76,9 @@ public class TestDefaultServerSettingsManager {
 		assertEquals(DummyListener.NAME, defConnector.getListener());
 	}
 
+	/**
+	 * Tests the parsing of one simple connector
+	 */
 	@Test
 	public void testSimpleConnector() {
 
@@ -94,6 +97,9 @@ public class TestDefaultServerSettingsManager {
 		assertEquals(DummyListener.NAME, defConnector.getListener());
 	}
 
+	/**
+	 * Tests the parsing of several connectors
+	 */
 	@Test
 	public void testSeveralConnectors() {
 
@@ -122,6 +128,9 @@ public class TestDefaultServerSettingsManager {
 		assertEquals(DummyListener.NAME, thirdConnector.getListener());
 	}
 
+	/**
+	 * Tests invalid connectors, i.e. when invalid ports are used
+	 */
 	@Test
 	public void testInvalidConnectorsByPort() {
 
@@ -142,6 +151,9 @@ public class TestDefaultServerSettingsManager {
 		}
 	}
 
+	/**
+	 * Tests invalid connectors, i.e. when invalid listeners are used
+	 */
 	@Test
 	public void testInvalidConnectorsByListener() {
 
@@ -162,6 +174,9 @@ public class TestDefaultServerSettingsManager {
 		}
 	}
 
+	/**
+	 * Tests invalid connectors, i.e. when invalid listeners are used
+	 */
 	@Test
 	public void testInvalidConnectorsByListenerWithoutException() {
 
@@ -188,6 +203,9 @@ public class TestDefaultServerSettingsManager {
 		assertEquals(DummyListener.NAME, secondConnector.getListener());
 	}
 
+	/**
+	 * Tests the parsing of extended connectors
+	 */
 	@Test
 	public void testExtendedConnectors() {
 
@@ -230,20 +248,45 @@ public class TestDefaultServerSettingsManager {
 		final Extension secondEntry = connector.getExtension("secondEntry");
 		assertEquals(0, secondEntry.getProperties().size());
 		assertEquals(1, secondEntry.getExtensions().size());
-		
+
 		final Extension thirdEntry = connector.getExtension("thirdEntry");
-		assertEquals(4, thirdEntry.getProperties().size());
+		assertEquals(5, thirdEntry.getProperties().size());
 		assertEquals(2, thirdEntry.getExtensions().size());
+		assertEquals("A", thirdEntry.getProperty("a"));
+		assertEquals("B", thirdEntry.getProperty("b"));
+		assertEquals("C", thirdEntry.getProperty("c"));
+		assertEquals("D", thirdEntry.getProperty("d"));
+		assertEquals("d", thirdEntry.getProperty("D"));
 
 		// check some raw-properties as well
 		assertEquals("1", firstEntry.getRawProperty("first"));
 		assertEquals("true", firstEntry.getRawProperty("third"));
-		
+		assertEquals("D", thirdEntry.getRawProperty("d"));
 
 		// check the sub-entries
 		final Extension secondSubEntry = secondEntry.getExtension("subEntry");
 		assertEquals("world", secondSubEntry.getRawProperty("attribute2"));
 		assertEquals("hello", secondSubEntry.getProperty("attribute1"));
 		assertEquals("world", secondSubEntry.getProperty("attribute2"));
+
+		int i = 1;
+		for (final Extension thirdSubEntry : thirdEntry.getExtensions()) {
+			assertEquals(2, thirdSubEntry.getProperties().size());
+			assertEquals("hello" + i, thirdSubEntry.getProperty("attribute1"));
+			assertEquals("world" + i, thirdSubEntry.getProperty("attribute2"));
+
+			// check the sub-sub-entries
+			assertEquals(i == 1 ? 1 : 0, thirdSubEntry.getExtensions().size());
+			if (i == 1) {
+				final Extension thirdSubSubEntry = thirdSubEntry
+						.getExtension("subSubEntry");
+				assertNotNull(thirdSubSubEntry);
+				assertEquals("DeepUnder", thirdSubSubEntry.getProperty(""));
+				assertEquals(1, thirdSubSubEntry.getExtensions().size());
+				assertNotNull(thirdSubSubEntry.getExtension("value"));
+			}
+
+			i++;
+		}
 	}
 }

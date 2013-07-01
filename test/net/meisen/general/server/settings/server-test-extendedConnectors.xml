@@ -12,9 +12,9 @@
   	  <secondEntry>
   	    <subEntry attribute1="hello" attribute2="world" />
   	  </secondEntry>
-  	  <thirdEntry a="A" b="B" c="C" d="D">
+  	  <thirdEntry a="A" b="B" c="C" D="d" d="D">
   	    <subEntry attribute1="hello1" attribute2="world1">
-  	      <subSubEntry>DeepUnder</subSubEntry>
+  	      <subSubEntry><value>Sample</value>DeepUnder</subSubEntry>
   	    </subEntry>
   	    <subEntry attribute1="hello2" attribute2="world2" />
   	  </thirdEntry>
