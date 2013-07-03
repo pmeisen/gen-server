@@ -14,6 +14,14 @@ import net.meisen.general.server.settings.pojos.Connector;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 
+/**
+ * The default implementation of the <code>ServerSettingsManager</code>.
+ * 
+ * @author pmeisen
+ * 
+ * @see IServerSettingsManager
+ * 
+ */
 public class DefaultServerSettingsManager implements IServerSettingsManager {
 
 	@Autowired
@@ -64,6 +72,17 @@ public class DefaultServerSettingsManager implements IServerSettingsManager {
 		}
 	}
 
+	/**
+	 * Merges all the default- and user-settings to one
+	 * <code>ServerSettings</code> instance. The default-settings are used for
+	 * fall-back, i.e. if the setting isn't defined in the user-settings.
+	 * 
+	 * @param defaultSettings
+	 *          the default settings (used for fall-back)
+	 * @param userSettings
+	 *          the defined user-settings, which override the default settings
+	 * @return
+	 */
 	protected IServerSettings mergeSettings(
 			final IServerSettings defaultSettings, final IServerSettings userSettings) {
 

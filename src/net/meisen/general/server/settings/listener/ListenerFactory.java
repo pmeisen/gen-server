@@ -13,18 +13,37 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 
+/**
+ * Factory to create the different <code>Listener</code> instances. A
+ * <code>Listener</code> can be registered and creatable by name or by it's
+ * class.
+ * 
+ * @author pmeisen
+ * 
+ * @see IListener
+ * 
+ */
 public class ListenerFactory {
 	private final static Logger LOG = LoggerFactory
 			.getLogger(ListenerFactory.class);
 
-	public Map<String, Class<? extends IListener>> listeners = new HashMap<String, Class<? extends IListener>>();
-
+	private Map<String, Class<? extends IListener>> listeners = new HashMap<String, Class<? extends IListener>>();
 	private String defaultListener;
 
 	@Autowired
 	@Qualifier(IConfiguration.coreConfigurationId)
 	private IConfiguration configuration;
 
+	/**
+	 * Registers a <code>listenerClazz</code> with an alias, i.e. a name which can
+	 * be used instead of the name to create an instance of the
+	 * <code>Listener</code>.
+	 * 
+	 * @param name
+	 *          the name to be the alias for the <code>listenerClazz</code>
+	 * @param listenerClazz
+	 *          the class to be associated to the specified <code>name</code>
+	 */
 	public void registerNamedListener(final String name,
 			final Class<? extends IListener> listenerClazz) {
 		final Class<? extends IListener> oldListener = listeners.put(
@@ -40,6 +59,13 @@ public class ListenerFactory {
 		}
 	}
 
+	/**
+	 * Registers the <code>Map</code> of <code>Listener</code> classes with the
+	 * specified name (i.e. the key of the passed map).
+	 * 
+	 * @param listeners
+	 *          the <code>Listener</code> instances to be registered
+	 */
 	public void registerNamedListeners(
 			final Map<String, Class<? extends IListener>> listeners) {
 		for (final Entry<String, Class<? extends IListener>> entry : listeners
@@ -51,14 +77,39 @@ public class ListenerFactory {
 		}
 	}
 
+	/**
+	 * Gets the default <code>Listener</code>, i.e. the one used when the name or
+	 * class of the <code>Listener</code> to be resolved is <code>null</code>.
+	 * 
+	 * @return the default <code>Listener</code> to be used if none is specified
+	 * 
+	 * @see #resolve(String)
+	 */
 	public String getDefaultListener() {
 		return defaultListener;
 	}
 
+	/**
+	 * Sets the default <code>Listener</code>.
+	 * 
+	 * @param defaultListener
+	 *          the default <code>Listener</code> to be used
+	 */
 	public void setDefaultListener(final String defaultListener) {
 		this.defaultListener = defaultListener;
 	}
 
+	/**
+	 * Resolves the passed <code>Listener</code> to the correct <code>Class</code>
+	 * , i.e. the implementation to be used to create the <code>Listener</code>
+	 * instance.
+	 * 
+	 * @param listener
+	 *          the name or the class (as string) of the listener to be resolved
+	 * 
+	 * @return the <code>Class</code> of the <code>Listener</code> specified by
+	 *         the passed <code>listener</code>
+	 */
 	public Class<? extends IListener> resolve(final String listener) {
 
 		// get the listener's class
@@ -85,9 +136,32 @@ public class ListenerFactory {
 		}
 	}
 
+	/**
+	 * Creates the instance of the <code>Listener</code> which is specified by the
+	 * name or the it's class. The created instance will be wired, i.e. annotation
+	 * based wiring is performed.
+	 * 
+	 * @param listener
+	 *          the name or the class of the <code>Listener</code> instance to be
+	 *          created
+	 * 
+	 * @return the created and wired instance
+	 */
 	public IListener createListener(final String listener) {
-		final Class<? extends IListener> listenerClazz = resolve(listener);
+		return createListener(resolve(listener));
+	}
 
+	/**
+	 * Creates the instance of the <code>Listener</code> which is specified by the
+	 * <code>listenerClazz</code>. The created instance will be wired, i.e.
+	 * annotation based wiring is performed.
+	 * 
+	 * @param listenerClazz
+	 *          the class of the <code>Listener</code> instance to be created
+	 * 
+	 * @return the created and wired instance
+	 */
+	public IListener createListener(final Class<? extends IListener> listenerClazz) {
 		if (listenerClazz == null) {
 			return null;
 		} else {

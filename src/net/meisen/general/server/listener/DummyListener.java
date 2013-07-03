@@ -8,16 +8,22 @@ import net.meisen.general.server.api.IListener;
 import net.meisen.general.server.exceptions.ServerSettingsException;
 import net.meisen.general.server.settings.pojos.Connector;
 
+/**
+ * Really, really simple implementation of a <code>IListener</code> and a
+ * <code>IConnectorValidator</code>.
+ * 
+ * @author pmeisen
+ * 
+ */
 public class DummyListener implements IListener, IConnectorValidator {
+	private final static Logger LOG = LoggerFactory
+			.getLogger(DummyListener.class);
 
 	/**
 	 * The name of this <code>Listener</code> used when defined it, instead of the
 	 * class-name
 	 */
 	public static final String NAME = "DUMMY";
-
-	private final static Logger LOG = LoggerFactory
-			.getLogger(DummyListener.class);
 
 	@Override
 	public void initialize(final Connector connector) {
@@ -44,6 +50,6 @@ public class DummyListener implements IListener, IConnectorValidator {
 
 	@Override
 	public void close() {
-	// nothing to do
+		// nothing to do
 	}
 }

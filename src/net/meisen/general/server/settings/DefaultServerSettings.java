@@ -16,10 +16,19 @@ import net.meisen.general.genmisc.exceptions.registry.IExceptionRegistry;
 import net.meisen.general.server.api.IConnectorValidator;
 import net.meisen.general.server.api.IListener;
 import net.meisen.general.server.api.IServerSettings;
+import net.meisen.general.server.api.IServerSettingsManager;
 import net.meisen.general.server.exceptions.ServerSettingsException;
 import net.meisen.general.server.settings.listener.ListenerFactory;
 import net.meisen.general.server.settings.pojos.Connector;
 
+/**
+ * The default implementation of the <code>ServerSettings</code> interface.
+ * 
+ * @author pmeisen
+ * 
+ * @see IServerSettings
+ * 
+ */
 public class DefaultServerSettings implements IServerSettings {
 	private final static Logger LOG = LoggerFactory
 			.getLogger(DefaultServerSettings.class);
@@ -37,10 +46,25 @@ public class DefaultServerSettings implements IServerSettings {
 	private boolean defaultSettings = false;
 	private boolean failOnUnresolvableListeners = true;
 
+	/**
+	 * Adds the settings of a <code>Connector</code> to the
+	 * <code>ServerSettings</code>.
+	 * 
+	 * @param connectorSetting
+	 *          the <code>Connector</code> to be added
+	 */
 	public void addConnectorSetting(final Connector connectorSetting) {
 		connectorSettings.add(connectorSetting);
 	}
 
+	/**
+	 * Adds a <code>Collection</code> of <code>Connector</code> instances to
+	 * <code>this</code>.
+	 * 
+	 * @param connectorSettings
+	 *          the <code>Collection</code> of <code>Connector</code> instances to
+	 *          be added
+	 */
 	public void addConnectorSettings(final Collection<Connector> connectorSettings) {
 		this.connectorSettings.addAll(connectorSettings);
 	}
@@ -50,6 +74,17 @@ public class DefaultServerSettings implements IServerSettings {
 		return Collections.unmodifiableList(connectorSettings);
 	}
 
+	/**
+	 * Defines if the instance represents the default settings of the server.
+	 * There should be only one instance which is default, otherwise the
+	 * <code>ServerSettingsManager</code> is unable to merge the defined settings.
+	 * 
+	 * @param defaultSettings
+	 *          <code>true</code> if <code>this</code> represents the default
+	 *          settings, otherwise <code>false</code>
+	 * 
+	 * @see IServerSettingsManager
+	 */
 	public void setDefaultSettings(final boolean defaultSettings) {
 		this.defaultSettings = defaultSettings;
 	}
@@ -101,10 +136,31 @@ public class DefaultServerSettings implements IServerSettings {
 		return true;
 	}
 
+	/**
+	 * Checks if the validation of <code>this</code> fails if the defined listener
+	 * cannot be resolved.
+	 * 
+	 * @return <code>true</code> if the validation fails, otherwise
+	 *         <code>false</code>
+	 * 
+	 * @see #validate()
+	 * @see ListenerFactory#resolve(String)
+	 */
 	public boolean isFailOnUnresolvableListeners() {
 		return failOnUnresolvableListeners;
 	}
 
+	/**
+	 * Defines if <code>this</code> should fail on validation if the defined
+	 * listener cannot be resolved.
+	 * 
+	 * @param failOnUnresolvableListeners
+	 *          <code>true</code> if the validation should fail, otherwise
+	 *          <code>false</code>
+	 * 
+	 * @see #validate()
+	 * @see ListenerFactory#resolve(String)
+	 */
 	public void setFailOnUnresolvableListeners(boolean failOnUnresolvableListeners) {
 		this.failOnUnresolvableListeners = failOnUnresolvableListeners;
 	}

@@ -3,7 +3,6 @@ package net.meisen.general.server;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.meisen.general.genmisc.exceptions.registry.IExceptionRegistry;
 import net.meisen.general.sbconfigurator.ConfigurationCoreSettings;
 import net.meisen.general.sbconfigurator.helper.SpringHelper;
 import net.meisen.general.server.api.IListener;
@@ -16,14 +15,19 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 
+/**
+ * The <code>Server</code> instance which starts the server and all the defined
+ * listeners.
+ * 
+ * @author pmeisen
+ * 
+ * @see IListener
+ * 
+ */
 public class Server {
 	private final static Logger LOG = LoggerFactory.getLogger(Server.class);
 
 	private final static String extendedConfiguratorCoreConfig = "sbconfigurator-core.xml";
-
-	@Autowired
-	@Qualifier("exceptionRegistry")
-	private IExceptionRegistry exceptionRegistry;
 
 	@Autowired
 	@Qualifier("finalServerSettings")
@@ -33,6 +37,9 @@ public class Server {
 	@Qualifier("listenerFactory")
 	private ListenerFactory listenerFactory;
 
+	/**
+	 * Starts the <code>Server</code> instance.
+	 */
 	public void start() {
 		final List<IListener> listeners = new ArrayList<IListener>();
 
@@ -71,21 +78,41 @@ public class Server {
 		}
 	}
 
+	/**
+	 * Gets the loaded <code>ServerSettings</code> of <code>this</code> instance.
+	 * 
+	 * @return the <code>ServerSettings</code> used by <code>this</code>
+	 */
 	public IServerSettings getServerSettings() {
 		return finalServerSettings;
 	}
 
+	/**
+	 * Creates a <code>Server</code> instance using the default configuration file
+	 * found on class-path.
+	 * 
+	 * @return the created <code>Server</code> instance
+	 */
 	public static Server createServer() {
 		return createServer(extendedConfiguratorCoreConfig);
 	}
 
+	/**
+	 * Creates a <code>Server</code> instance using the defined
+	 * <code>coreConfig</code> file, which is searched for on the class-path.
+	 * 
+	 * @param coreConfig
+	 *          the file to load the server from
+	 * 
+	 * @return the created <code>Server</code> instance
+	 */
 	public static Server createServer(final String coreConfig) {
 
 		// load the coreSettings
 		try {
 			final ConfigurationCoreSettings settings = ConfigurationCoreSettings
 					.loadCoreSettings(coreConfig, Server.class);
-			
+
 			return settings.getConfiguration().getModule("server");
 		} catch (final RuntimeException e) {
 			// spring errors are hard to understand, let's get back to the normal
@@ -105,10 +132,25 @@ public class Server {
 		}
 	}
 
+	/**
+	 * Main entry point, which creates and starts the default server.
+	 * 
+	 * @param args
+	 *          the arguments passed to the main-method
+	 */
 	public static void main(final String[] args) {
-		final Server server = createServer();
 
-		// now start the server
-		server.start();
+		try {
+
+			// create the server
+			final Server server = createServer();
+
+			// now start the server
+			server.start();
+		} catch (final Throwable t) {
+			if (LOG.isErrorEnabled()) {
+				LOG.error(t.getMessage(), t);
+			}
+		}
 	}
 }
