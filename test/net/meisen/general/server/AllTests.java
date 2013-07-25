@@ -12,7 +12,7 @@ import org.junit.runners.Suite;
  * 
  */
 @RunWith(Suite.class)
-@Suite.SuiteClasses({ TestDefaultServerSettingsManager.class })
+@Suite.SuiteClasses({ TestDefaultServerSettingsManager.class, TestServer.class })
 public class AllTests {
 	// nothing more to do here
 }

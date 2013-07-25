@@ -1,12 +1,15 @@
 package net.meisen.general.server;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
+import net.meisen.general.genmisc.exceptions.registry.IExceptionRegistry;
 import net.meisen.general.sbconfigurator.ConfigurationCoreSettings;
 import net.meisen.general.sbconfigurator.helper.SpringHelper;
 import net.meisen.general.server.api.IListener;
 import net.meisen.general.server.api.IServerSettings;
+import net.meisen.general.server.exceptions.ServerInitializeException;
 import net.meisen.general.server.settings.listener.ListenerFactory;
 import net.meisen.general.server.settings.pojos.Connector;
 
@@ -37,11 +40,48 @@ public class Server {
 	@Qualifier("listenerFactory")
 	private ListenerFactory listenerFactory;
 
+	@Autowired
+	@Qualifier("exceptionRegistry")
+	private IExceptionRegistry exceptionRegistry;
+
+	private List<IListener> listeners;
+
+	/**
+	 * Hide the default constructor, please use {@link Server#createServer()} to
+	 * create a <code>Server</code>.
+	 * 
+	 * @see Server#createServer()
+	 * @see Server#createServer(String)
+	 */
+	private Server() {
+		// nothing to do
+
+		final Thread shutdownThread = new Thread() {
+
+			@Override
+			public void run() {
+				Server.this.shutdown();
+			}
+		};
+
+		// register the shutdown hook to finish the whole thing gracefully
+		Runtime.getRuntime().addShutdownHook(shutdownThread);
+	}
+
 	/**
 	 * Starts the <code>Server</code> instance.
 	 */
-	public void start() {
+	public synchronized void start() {
 		final List<IListener> listeners = new ArrayList<IListener>();
+
+		if (exceptionRegistry == null) {
+			throw new ServerInitializeException(
+					"The Server was not created correctly, did you use Server.createServer().");
+		} else if (finalServerSettings == null) {
+			exceptionRegistry.throwException(ServerInitializeException.class, 1000);
+		} else if (this.listeners != null) {
+			exceptionRegistry.throwException(ServerInitializeException.class, 1003);
+		}
 
 		// initialize each listener
 		for (final Connector c : finalServerSettings.getConnectorSettings()) {
@@ -75,6 +115,44 @@ public class Server {
 			}
 
 			listener.open();
+		}
+
+		// keep the opened listeners
+		this.listeners = Collections.synchronizedList(listeners);
+	}
+
+	/**
+	 * Used to shutdown the server correctly, i.e. inform all listeners to
+	 * shutdown and let them shutdown successfully.
+	 */
+	public synchronized void shutdown() {
+
+		if (listeners == null) {
+			// nothing to do
+		} else {
+
+			for (final IListener listener : listeners) {
+
+				// log
+				if (LOG.isDebugEnabled()) {
+					LOG.debug("Closing listener '" + listener.toString() + "'...");
+				}
+
+				// if a listener cannot shutdown we still should try to shutdown the
+				// others correctly
+				try {
+					listener.close();
+				} catch (final RuntimeException e) {
+					if (LOG.isErrorEnabled()) {
+						LOG.error(
+								"Error while closing the listener '" + listener.toString()
+										+ "'", e);
+					}
+				}
+			}
+
+			// reset the listeners
+			listeners = null;
 		}
 	}
 
@@ -133,7 +211,8 @@ public class Server {
 	}
 
 	/**
-	 * Main entry point, which creates and starts the default server.
+	 * Main entry point, which creates and starts the default server. The server
+	 * registers a shut-down hook to be shutdown gracefully.
 	 * 
 	 * @param args
 	 *          the arguments passed to the main-method
@@ -147,6 +226,10 @@ public class Server {
 
 			// now start the server
 			server.start();
+
+			synchronized (Thread.currentThread()) {
+				Thread.currentThread().wait();
+			}
 		} catch (final Throwable t) {
 			if (LOG.isErrorEnabled()) {
 				LOG.error(t.getMessage(), t);

@@ -25,6 +25,8 @@ public class DummyListener implements IListener, IConnectorValidator {
 	 */
 	public static final String NAME = "DUMMY";
 
+	private Thread dummyThread = null;
+
 	@Override
 	public void initialize(final Connector connector) {
 		if (LOG.isWarnEnabled()) {
@@ -34,7 +36,26 @@ public class DummyListener implements IListener, IConnectorValidator {
 
 	@Override
 	public void open() {
-		// nothing to do
+
+		// create a dummy thread
+		if (dummyThread == null) {
+			dummyThread = new Thread() {
+				public void run() {
+					try {
+						// set the thread into waiting mode
+						synchronized (this) {
+							dummyThread.wait();
+						}
+					} catch (final InterruptedException e) {
+						interrupt();
+					}
+				}
+			};
+
+			dummyThread.setName("DummyListenerThread");
+		}
+
+		dummyThread.start();
 	}
 
 	@Override
@@ -50,6 +71,15 @@ public class DummyListener implements IListener, IConnectorValidator {
 
 	@Override
 	public void close() {
-		// nothing to do
+
+		if (dummyThread != null) {
+
+			// close the thread
+			synchronized (dummyThread) {
+				dummyThread.notifyAll();
+			}
+
+			dummyThread = null;
+		}
 	}
 }

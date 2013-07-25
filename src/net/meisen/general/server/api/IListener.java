@@ -28,12 +28,16 @@ public interface IListener {
 	public void initialize(final Connector connector);
 
 	/**
-	 * Opens the <code>Listener</code>, i.e. starts the work of it
+	 * Opens the <code>Listener</code>, i.e. starts the work of it. If the
+	 * listener is open already and the method is called, an
+	 * <code>RuntimeException</code> should be thrown.
 	 */
 	public void open();
 
 	/**
-	 * Closes the <code>Listener</code>, i.e. stops the work of it
+	 * Closes the <code>Listener</code>, i.e. stops the work of it. It might
+	 * happen that the close method is called several times, therefore the method
+	 * must ensure that it can be called multiple times without any problems.
 	 */
 	public void close();
 }
