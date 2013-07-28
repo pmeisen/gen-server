@@ -7,38 +7,41 @@ import java.io.PrintWriter;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
-import net.meisen.general.server.api.IControlMessagesManager;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-
 public class ServerController {
 
-	@Autowired
-	@Qualifier("controlMessagesManager")
-	private IControlMessagesManager controlMessagesManager;
+	private final int port;
+	private final String host;
 
-	public void lala(final int port) {
+	public ServerController(final String host, final int port) {
+		this.port = port;
+		this.host = host;
+	}
+
+	public void sendShutdown() {
+		sendMessage("shutdown");
+	}
+
+	protected String sendMessage(final String msg) {
 		try {
-			Socket socket = new Socket("localhost", port);
-			PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
-			BufferedReader in = new BufferedReader(new InputStreamReader(
+			final Socket socket = new Socket(host, port);
+			final PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
+			final BufferedReader in = new BufferedReader(new InputStreamReader(
 					socket.getInputStream()));
 
-			out.println("TEST");
-			out.println("");
+			// send the message
+			out.println(msg);
 
-			out.println((String) null);
-			out.println("TEST2");
+			// get the answer - right now we don't care
+			final String answer = in.readLine();
 
+			// close the Socket
 			socket.close();
 
-		} catch (UnknownHostException e) {
-			System.out.println("Unknown host: kq6py");
-			System.exit(1);
-		} catch (IOException e) {
-			System.out.println("No I/O");
-			System.exit(1);
+			return answer;
+		} catch (final UnknownHostException e) {
+			throw new ServerControllerException("Unable to connect to server.", e);
+		} catch (final IOException e) {
+			throw new ServerControllerException("Unable to write to socket.", e);
 		}
 	}
 }

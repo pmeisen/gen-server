@@ -54,20 +54,7 @@ public class Server {
 	 * @see Server#createServer(String)
 	 */
 	private Server() {
-		final Thread shutdownThread = new Thread() {
-
-			@Override
-			public void run() {
-				if (LOG.isInfoEnabled()) {
-					LOG.info("The server will be shut down because of a ShutdownHook.");
-				}
-				
-				Server.this.shutdown();
-			}
-		};
-		
-		// register the shutdown hook to finish the whole thing gracefully
-		Runtime.getRuntime().addShutdownHook(shutdownThread);
+		// nothing to do
 	}
 
 	/**
@@ -119,6 +106,19 @@ public class Server {
 			listener.open();
 		}
 
+		// register the shutdown hook to finish the whole thing gracefully
+		Runtime.getRuntime().addShutdownHook(new Thread() {
+
+			@Override
+			public void run() {
+				if (LOG.isInfoEnabled()) {
+					LOG.info("The server will be shut down because of a ShutdownHook.");
+				}
+
+				Server.this.shutdown(false);
+			}
+		});
+
 		// keep the opened listeners
 		this.listeners = Collections.synchronizedList(listeners);
 	}
@@ -126,8 +126,12 @@ public class Server {
 	/**
 	 * Used to shutdown the server correctly, i.e. inform all listeners to
 	 * shutdown and let them shutdown successfully.
+	 * 
+	 * @param shutdownVM
+	 *          <code>true</code> to shutdown completely, i.e. also send
+	 *          {@link System#exit(int)}, otherwise <code>false</code>
 	 */
-	public synchronized void shutdown() {
+	public synchronized void shutdown(final boolean shutdownVM) {
 
 		if (listeners == null) {
 			// nothing to do
@@ -155,6 +159,10 @@ public class Server {
 
 			// reset the listeners
 			listeners = null;
+		}
+
+		if (shutdownVM) {
+			System.exit(0);
 		}
 	}
 
@@ -192,7 +200,7 @@ public class Server {
 		try {
 			final ConfigurationCoreSettings settings = ConfigurationCoreSettings
 					.loadCoreSettings(coreConfig, Server.class);
-			
+
 			return settings.getConfiguration().getModule("server");
 		} catch (final RuntimeException e) {
 			// spring errors are hard to understand, let's get back to the normal

@@ -32,8 +32,8 @@ public class DefaultControlMessagesManager implements IControlMessagesManager {
 	public void addControlMessage(
 			final Class<? extends IControlMessage> controlMessageClazz) {
 
-		if (LOG.isTraceEnabled()) {
-			LOG.trace("Adding new message of type '" + controlMessageClazz + "'");
+		if (controlMessageClazz == null) {
+			exceptionRegistry.throwException(ControlMessageException.class, 1002);
 		}
 
 		// create the instance
@@ -45,8 +45,10 @@ public class DefaultControlMessagesManager implements IControlMessagesManager {
 					controlMessageClazz.getName());
 		}
 
-		// get the identifier of the message
-		final String id = msg.getMessageIdentifier();
+		// validate the identifier
+		final String id = validateId(msg.getMessageIdentifier());
+
+		// check if another ControlMessage uses the id
 		if (controlMessages.containsKey(id)) {
 			final IControlMessage knownMsg = controlMessages.get(id);
 			if (knownMsg.getClass().equals(controlMessageClazz)) {
@@ -56,9 +58,37 @@ public class DefaultControlMessagesManager implements IControlMessagesManager {
 						+ controlMessageClazz.getName() + "').");
 			}
 		} else {
+			if (LOG.isTraceEnabled()) {
+				LOG.trace("Adding new message of type '" + controlMessageClazz + "'");
+			}
+
 			controlMessages.put(id, msg);
 		}
+	}
 
+	/**
+	 * Validate the identifier and return a unified name.
+	 * 
+	 * @param id
+	 *          the id to be validated and unified
+	 * @param controlMessageClazz
+	 *          the class of the IControlMessage, cannot be <code>null</code> and
+	 *          is just used for logging purposes
+	 * 
+	 * @return the unified id
+	 */
+	protected String validateId(final String id) {
+		if (id == null || "".equals(id.trim())) {
+			exceptionRegistry.throwException(ControlMessageException.class, 1001);
+
+			// never happens
+			return null;
+		}
+
+		// get the unifiedId
+		final String unifiedId = id.trim().toUpperCase();
+
+		return unifiedId;
 	}
 
 	public void addControlMessages(
@@ -68,25 +98,18 @@ public class DefaultControlMessagesManager implements IControlMessagesManager {
 		}
 	}
 
-	// NULLRECEIVED("NLRCVD"), DATARECEIVED("RCVD"), CMD_SHUTDOWN("SHUTDOWN");
-	//
-	// private final static Map<String, ControlMessages> commands = new
-	// HashMap<String, ControlMessages>();
-	//
-	// private final String msg;
-	//
-	// private ControlMessages(final String msg) {
-	//
-	// // make sure that we don't have any null messages
-	// if (msg == null) {
-	// throw new NullPointerException("The msg cannot be null.");
-	// }
-	//
-	// // they all should be upper case
-	// this.msg = msg.toUpperCase();
-	// }
-	//
-	// public static ControlMessages getControl(final String msg) {
-	//
-	// }
+	@Override
+	public IControlMessage determineMessage(final String msg) {
+
+		// null is not allowed so let's get away of it right away
+		if (msg == null) {
+			return null;
+		}
+
+		// now trim the message and get it
+		final String unified = validateId(msg);
+
+		// get the ControlMessage associated to the unifier
+		return controlMessages.get(unified);
+	}
 }

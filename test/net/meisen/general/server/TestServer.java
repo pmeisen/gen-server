@@ -49,7 +49,7 @@ public class TestServer {
 		assertTrue(found);
 		
 		// shut the server down
-		server.shutdown();
+		server.shutdown(false);
 		
 		// give some time to shutdown
 		Thread.sleep(200);

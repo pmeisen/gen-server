@@ -13,6 +13,8 @@
     <property name="arguments">
       <list value-type="java.lang.Class">
         <value>net.meisen.general.server.control.messages.ShutdownMessage</value>
+        <value>net.meisen.general.server.control.messages.NullReceivedMessage</value>
+        <value>net.meisen.general.server.control.messages.DataReceivedMessage</value>
       </list>
     </property>
   </bean>

@@ -15,5 +15,5 @@
   </bean>
   
   <!-- the instance of the server -->
-  <bean id="server" class="net.meisen.general.server.Server" />
+  <bean id="server" class="net.meisen.general.server.Server" scope="singleton"/>
 </beans>

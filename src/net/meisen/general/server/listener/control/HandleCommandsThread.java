@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.Socket;
 
+import net.meisen.general.server.api.IControlMessage;
 import net.meisen.general.server.api.IControlMessagesManager;
 import net.meisen.general.server.listener.utility.WorkerThread;
 
@@ -58,12 +59,41 @@ public class HandleCommandsThread extends WorkerThread {
 				while (!out.checkError()) {
 
 					final String msg = in.readLine();
+					final IControlMessage answerMsg;
 					if (msg == null) {
-						out.println("[NLRCVD]");
+						if (LOG.isTraceEnabled()) {
+							LOG.trace("Received a NULL message.");
+						}
+
+						answerMsg = controlMessagesManager.determineMessage("NLRCVD");
 					} else {
-						out.println("[RCVD]");
-						System.out.println(msg);
+						final IControlMessage rcvMsg = controlMessagesManager
+								.determineMessage(msg);
+
+						if (LOG.isDebugEnabled()) {
+							LOG.debug("Received message '" + msg
+									+ "', which was translated to '" + rcvMsg + "'");
+						}
+
+						// execute the message
+						if (rcvMsg != null) {
+							try {
+								rcvMsg.execute();
+							} catch (final Exception e) {
+								// we cannot allow that the execution kills anything
+								if (LOG.isErrorEnabled()) {
+									LOG.error(
+											"Execution of ControlMessage '" + msg + "' failed.", e);
+								}
+							}
+						}
+
+						// send the message that data was retrieved
+						answerMsg = controlMessagesManager.determineMessage("RCVD");
 					}
+
+					// write the answer
+					out.println(answerMsg.getMessageIdentifier());
 				}
 			} catch (final IOException e) {
 				if (LOG.isWarnEnabled()) {
