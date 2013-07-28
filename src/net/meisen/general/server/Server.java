@@ -54,16 +54,18 @@ public class Server {
 	 * @see Server#createServer(String)
 	 */
 	private Server() {
-		// nothing to do
-
 		final Thread shutdownThread = new Thread() {
 
 			@Override
 			public void run() {
+				if (LOG.isInfoEnabled()) {
+					LOG.info("The server will be shut down because of a ShutdownHook.");
+				}
+				
 				Server.this.shutdown();
 			}
 		};
-
+		
 		// register the shutdown hook to finish the whole thing gracefully
 		Runtime.getRuntime().addShutdownHook(shutdownThread);
 	}
@@ -190,7 +192,7 @@ public class Server {
 		try {
 			final ConfigurationCoreSettings settings = ConfigurationCoreSettings
 					.loadCoreSettings(coreConfig, Server.class);
-
+			
 			return settings.getConfiguration().getModule("server");
 		} catch (final RuntimeException e) {
 			// spring errors are hard to understand, let's get back to the normal

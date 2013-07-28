@@ -6,4 +6,5 @@
   <import resource="classpath:/net/meisen/general/server/server-bean-core.xml"/>
   <import resource="classpath:/net/meisen/general/server/server-bean-exceptions.xml"/>
   <import resource="classpath:/net/meisen/general/server/server-bean-listener.xml"/>
+  <import resource="classpath:/net/meisen/general/server/server-bean-controlMessages.xml"/>
 </beans>

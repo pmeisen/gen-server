@@ -29,7 +29,9 @@ public class DummyListener implements IListener, IConnectorValidator {
 
 	@Override
 	public void initialize(final Connector connector) {
-		if (LOG.isWarnEnabled()) {
+		if (!connector.isEnable()) {
+			// do nothing
+		} else if (LOG.isWarnEnabled()) {
 			LOG.warn("Trying to initialize the dummy listener, this listener is just a dummy for the basic implementation of the server.");
 		}
 	}

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+
+  <!-- add the manager to handle controlMessages -->
+  <bean id="controlMessagesManager" class="net.meisen.general.server.control.DefaultControlMessagesManager" />
+    
+  <!-- add the catalogs to the exceptionsRegistry -->
+  <bean class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
+    <property name="targetObject"><ref bean="controlMessagesManager" /></property>
+    <property name="targetMethod" value="addControlMessages" />
+    <property name="arguments">
+      <list value-type="java.lang.Class">
+        <value>net.meisen.general.server.control.messages.ShutdownMessage</value>
+      </list>
+    </property>
+  </bean>
+</beans>

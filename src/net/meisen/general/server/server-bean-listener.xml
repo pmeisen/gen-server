@@ -20,6 +20,10 @@
           <key><util:constant static-field="net.meisen.general.server.listener.DummyListener.NAME" /></key>
           <value>net.meisen.general.server.listener.DummyListener</value>
         </entry>
+        <entry>
+          <key><util:constant static-field="net.meisen.general.server.listener.control.ControlListener.NAME" /></key>
+          <value>net.meisen.general.server.listener.control.ControlListener</value>
+        </entry>
       </map>
     </property>
    </bean>

@@ -15,7 +15,11 @@
         <entry key="net.meisen.general.server.exceptions.ServerInitializeException" 
                value="net.meisen.general.genmisc.exceptions.catalog.DefaultLocalizedExceptionCatalog" />
         <entry key="net.meisen.general.server.exceptions.ServerSettingsException" 
-               value="net.meisen.general.genmisc.exceptions.catalog.DefaultLocalizedExceptionCatalog" />       
+               value="net.meisen.general.genmisc.exceptions.catalog.DefaultLocalizedExceptionCatalog" />
+        <entry key="net.meisen.general.server.exceptions.ControlListenerException" 
+               value="net.meisen.general.genmisc.exceptions.catalog.DefaultLocalizedExceptionCatalog" /> 
+        <entry key="net.meisen.general.server.exceptions.ControlMessageException" 
+               value="net.meisen.general.genmisc.exceptions.catalog.DefaultLocalizedExceptionCatalog" /> 
       </map>
     </property>
   </bean>

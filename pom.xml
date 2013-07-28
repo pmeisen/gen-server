@@ -5,7 +5,7 @@
   
   <groupId>net.meisen.general</groupId>
   <artifactId>net-meisen-general-server</artifactId>
-  <version>1.0.0</version>
+  <version>TRUNK</version>
   <name>gen-server</name>
   <description>General Server implementation to setup a server</description>
   <packaging>jar</packaging>
@@ -14,7 +14,7 @@
     <dependency>
       <groupId>net.meisen.general</groupId>
       <artifactId>net-meisen-general-gen-sbconfigurator</artifactId>
-      <version>1.0.0-SNAPSHOT</version>
+      <version>TRUNK-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>org.springframework</groupId>
@@ -24,7 +24,7 @@
     <dependency>
       <groupId>net.meisen.general</groupId>
       <artifactId>net-meisen-general-gen-misc</artifactId>
-      <version>1.0.0-SNAPSHOT</version>
+      <version>TRUNK-SNAPSHOT</version>
     </dependency>
     
     <!-- logging -->
@@ -32,6 +32,15 @@
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-log4j12</artifactId>
       <version>1.7.2</version>
+    </dependency>
+    
+    <!-- tests -->
+    <dependency>
+      <groupId>net.meisen.general</groupId>
+      <artifactId>net-meisen-general-gen-sbconfigurator</artifactId>
+      <version>TRUNK-SNAPSHOT</version>
+      <classifier>test</classifier>
+      <scope>test</scope>
     </dependency>
   </dependencies>
 </project>
