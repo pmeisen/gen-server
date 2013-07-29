@@ -1,6 +1,6 @@
 package net.meisen.general.server;
 
-import net.meisen.general.server.control.TestControlListener;
+import net.meisen.general.server.control.TestServerController;
 import net.meisen.general.server.control.TestDefaultControlMessagesManager;
 import net.meisen.general.server.control.TestDefaultControlMessagesManagerWithDefaultSettings;
 import net.meisen.general.server.settings.TestDefaultServerSettingsManager;
@@ -18,7 +18,7 @@ import org.junit.runners.Suite;
 @Suite.SuiteClasses({ TestDefaultServerSettingsManager.class, TestServer.class,
 		TestDefaultControlMessagesManager.class,
 		TestDefaultControlMessagesManagerWithDefaultSettings.class,
-		TestControlListener.class })
+		TestServerController.class })
 public class AllTests {
 	// nothing more to do here
 }

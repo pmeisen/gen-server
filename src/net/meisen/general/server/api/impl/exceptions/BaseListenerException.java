@@ -1,17 +1,7 @@
-package net.meisen.general.server.exceptions;
+package net.meisen.general.server.api.impl.exceptions;
 
-import net.meisen.general.server.listener.control.ControlListener;
-
-/**
- * Exception thrown by the <code>ControlListener</code>.
- * 
- * @author pmeisen
- * 
- * @see ControlListener
- * 
- */
-public class ControlListenerException extends RuntimeException {
-	private static final long serialVersionUID = -7552841652053639777L;
+public class BaseListenerException extends RuntimeException {
+	private static final long serialVersionUID = -481543552992702073L;
 
 	/**
 	 * Creates an exception which should been thrown whenever there is no other
@@ -20,7 +10,7 @@ public class ControlListenerException extends RuntimeException {
 	 * @param message
 	 *          the message of the exception
 	 */
-	public ControlListenerException(final String message) {
+	public BaseListenerException(final String message) {
 		super(message);
 	}
 
@@ -33,7 +23,7 @@ public class ControlListenerException extends RuntimeException {
 	 * @param t
 	 *          the reason for the exception
 	 */
-	public ControlListenerException(final String message, final Throwable t) {
+	public BaseListenerException(final String message, final Throwable t) {
 		super(message, t);
 	}
 }

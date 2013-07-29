@@ -144,11 +144,15 @@ public class Server {
 
 				@Override
 				public void run() {
-					if (LOG.isInfoEnabled()) {
-						LOG.info("The server will be shut down because of a ShutdownHook.");
-					}
 
-					Server.this.shutdown();
+					// check if the server is running and shut it down if so
+					if (Server.this.isRunning()) {
+						if (LOG.isInfoEnabled()) {
+							LOG.info("The server will be shut down because of a ShutdownHook.");
+						}
+
+						Server.this.shutdown();
+					}
 				}
 			});
 
@@ -163,6 +167,15 @@ public class Server {
 				}
 			}
 		}
+	}
+
+	/**
+	 * Checks if the server is currently running.
+	 * 
+	 * @return <code>true</code> if it's running, otherwise <code>false</code>
+	 */
+	public boolean isRunning() {
+		return serverThread != null;
 	}
 
 	/**

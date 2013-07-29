@@ -5,6 +5,7 @@ import net.meisen.general.sbconfigurator.api.IConfiguration;
 import net.meisen.general.sbconfigurator.runners.JUnitConfigurationRunner;
 import net.meisen.general.sbconfigurator.runners.annotations.ContextClass;
 import net.meisen.general.server.Server;
+import net.meisen.general.server.control.ServerController;
 import net.meisen.general.server.listener.control.ControlListener;
 import net.meisen.general.server.settings.pojos.Connector;
 
@@ -21,7 +22,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
  */
 @RunWith(JUnitConfigurationRunner.class)
 @ContextClass(Server.class)
-public class TestControlListener {
+public class TestServerController {
 
 	@Autowired(required = true)
 	@Qualifier("coreConfiguration")
