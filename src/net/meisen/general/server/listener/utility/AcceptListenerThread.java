@@ -55,12 +55,11 @@ public abstract class AcceptListenerThread extends Thread {
 
 		// do while incoming connections can be accepted
 		final ServerSocket serverSocket = getServerSocket();
-		while (curState) {
-			if (LOG.isInfoEnabled()) {
-				LOG.info("Start listening on port " + serverSocket.getLocalPort()
-						+ "...");
-			}
+		if (LOG.isInfoEnabled()) {
+			LOG.info("Start listening on port " + serverSocket.getLocalPort() + "...");
+		}
 
+		while (curState) {
 			try {
 				// listen to the socket
 				final Socket socket = serverSocket.accept();

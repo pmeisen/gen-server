@@ -27,6 +27,6 @@ public class ShutdownMessage implements IControlMessage {
 
 	@Override
 	public void execute() {
-		server.shutdown(true);
+		server.shutdown();
 	}
 }

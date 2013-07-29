@@ -1,6 +1,7 @@
 package net.meisen.general.server;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.util.Set;
@@ -17,7 +18,8 @@ public class TestServer {
 
 	/**
 	 * Tests the starting and shutting down of the <code>Server</code>.
-	 * @throws InterruptedException 
+	 * 
+	 * @throws InterruptedException
 	 */
 	@Test
 	public void testServerStartAndShutdown() throws InterruptedException {
@@ -27,33 +29,39 @@ public class TestServer {
 
 		// get and start the server
 		final Server server = Server.createServer();
-		server.start();
-		
+		server.startAsync();
+
 		// give some time to start
 		Thread.sleep(200);
 
 		// get all running threads
 		final Set<Thread> threadSet = Thread.getAllStackTraces().keySet();
 
-		// check if the thread was started
-		assertEquals(threadSize + 1, threadSet.size());
+		// check if the thread for the server and the one for the listner was
+		// started
+		assertEquals(threadSize + 2, threadSet.size());
 
 		// search for the thread
-		boolean found = false;
+		boolean foundDummy = false, foundServer = false;
 		for (final Thread t : threadSet) {
 			if (t.getName().equals("DummyListenerThread")) {
-				found = true;
-				break;
+				assertFalse(foundDummy);
+				foundDummy = true;
+			}
+			if (t.getName().equals("ServerMainThread")) {
+				assertFalse(foundServer);
+				foundServer = true;
 			}
 		}
-		assertTrue(found);
-		
+		assertTrue(foundDummy);
+		assertTrue(foundServer);
+
 		// shut the server down
-		server.shutdown(false);
-		
+		server.shutdown();
+
 		// give some time to shutdown
 		Thread.sleep(200);
-		
+
 		// now check if it was closed
 		assertEquals(threadSize, Thread.getAllStackTraces().keySet().size());
 	}

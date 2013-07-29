@@ -46,6 +46,8 @@ public class Server {
 
 	private List<IListener> listeners;
 
+	private Thread serverThread;
+
 	/**
 	 * Hide the default constructor, please use {@link Server#createServer()} to
 	 * create a <code>Server</code>.
@@ -58,11 +60,29 @@ public class Server {
 	}
 
 	/**
-	 * Starts the <code>Server</code> instance.
+	 * Starts the <code>Server</code> in a new <code>Thread</code>.
+	 */
+	public synchronized void startAsync() {
+
+		serverThread = new Thread() {
+
+			@Override
+			public void run() {
+				Server.this.start();
+			}
+		};
+		serverThread.setName("ServerMainThread");
+		serverThread.setDaemon(false);
+		serverThread.start();
+	}
+
+	/**
+	 * Starts the <code>Server</code> in the current <code>Thread</code> if no
+	 * other <code>serverThread</code> is specified.
 	 */
 	public synchronized void start() {
-		final List<IListener> listeners = new ArrayList<IListener>();
 
+		// check some pre-conditions
 		if (exceptionRegistry == null) {
 			throw new ServerInitializeException(
 					"The Server was not created correctly, did you use Server.createServer().");
@@ -72,7 +92,13 @@ public class Server {
 			exceptionRegistry.throwException(ServerInitializeException.class, 1003);
 		}
 
+		// define the current thread if none is used so far
+		if (serverThread == null) {
+			serverThread = Thread.currentThread();
+		}
+
 		// initialize each listener
+		final List<IListener> listeners = new ArrayList<IListener>();
 		for (final Connector c : finalServerSettings.getConnectorSettings()) {
 			final IListener listener = listenerFactory
 					.createListener(c.getListener());
@@ -115,23 +141,29 @@ public class Server {
 					LOG.info("The server will be shut down because of a ShutdownHook.");
 				}
 
-				Server.this.shutdown(false);
+				Server.this.shutdown();
 			}
 		});
 
 		// keep the opened listeners
 		this.listeners = Collections.synchronizedList(listeners);
+
+		synchronized (serverThread) {
+			try {
+				serverThread.wait();
+			} catch (final InterruptedException e) {
+				if (LOG.isTraceEnabled()) {
+					LOG.info("The server thread was interrupted.");
+				}
+			}
+		}
 	}
 
 	/**
 	 * Used to shutdown the server correctly, i.e. inform all listeners to
 	 * shutdown and let them shutdown successfully.
-	 * 
-	 * @param shutdownVM
-	 *          <code>true</code> to shutdown completely, i.e. also send
-	 *          {@link System#exit(int)}, otherwise <code>false</code>
 	 */
-	public synchronized void shutdown(final boolean shutdownVM) {
+	public synchronized void shutdown() {
 
 		if (listeners == null) {
 			// nothing to do
@@ -161,8 +193,9 @@ public class Server {
 			listeners = null;
 		}
 
-		if (shutdownVM) {
-			System.exit(0);
+		// notify the thread to be awaken again
+		synchronized (serverThread) {
+			serverThread.notifyAll();
 		}
 	}
 
@@ -236,10 +269,6 @@ public class Server {
 
 			// now start the server
 			server.start();
-
-			synchronized (Thread.currentThread()) {
-				Thread.currentThread().wait();
-			}
 		} catch (final Throwable t) {
 			if (LOG.isErrorEnabled()) {
 				LOG.error(t.getMessage(), t);
