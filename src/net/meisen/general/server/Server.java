@@ -62,25 +62,31 @@ public class Server {
 	/**
 	 * Starts the <code>Server</code> in a new <code>Thread</code>.
 	 */
-	public synchronized void startAsync() {
+	public void startAsync() {
 
-		serverThread = new Thread() {
+		if (serverThread == null) {
+			serverThread = new Thread() {
 
-			@Override
-			public void run() {
-				Server.this.start();
+				@Override
+				public void run() {
+					Server.this.start();
+				}
+			};
+			serverThread.setName("ServerMainThread");
+			serverThread.setDaemon(false);
+			serverThread.start();
+		} else {
+			if (LOG.isWarnEnabled()) {
+				LOG.warn("The server was already started when startAsync was called.");
 			}
-		};
-		serverThread.setName("ServerMainThread");
-		serverThread.setDaemon(false);
-		serverThread.start();
+		}
 	}
 
 	/**
 	 * Starts the <code>Server</code> in the current <code>Thread</code> if no
 	 * other <code>serverThread</code> is specified.
 	 */
-	public synchronized void start() {
+	public void start() {
 
 		// check some pre-conditions
 		if (exceptionRegistry == null) {
@@ -98,57 +104,57 @@ public class Server {
 		}
 
 		// initialize each listener
-		final List<IListener> listeners = new ArrayList<IListener>();
-		for (final Connector c : finalServerSettings.getConnectorSettings()) {
-			final IListener listener = listenerFactory
-					.createListener(c.getListener());
+		synchronized (serverThread) {
+			final List<IListener> listeners = new ArrayList<IListener>();
+			for (final Connector c : finalServerSettings.getConnectorSettings()) {
+				final IListener listener = listenerFactory.createListener(c
+						.getListener());
 
-			// check if we have a listener, otherwise invalid configuration
-			if (listener == null) {
-				// exception
-			}
-
-			// log
-			if (LOG.isDebugEnabled()) {
-				LOG.debug("Start to initialize listener '" + listener.toString()
-						+ "' on port '" + c.getPort() + "'...");
-			}
-
-			// open the port to listen for connections
-			listener.initialize(c);
-
-			// add the listener because it initialized successfully
-			listeners.add(listener);
-		}
-
-		// if initialization worked we can open each listener
-		for (final IListener listener : listeners) {
-
-			// log
-			if (LOG.isDebugEnabled()) {
-				LOG.debug("Opening listener '" + listener.toString() + "'...");
-			}
-
-			listener.open();
-		}
-
-		// register the shutdown hook to finish the whole thing gracefully
-		Runtime.getRuntime().addShutdownHook(new Thread() {
-
-			@Override
-			public void run() {
-				if (LOG.isInfoEnabled()) {
-					LOG.info("The server will be shut down because of a ShutdownHook.");
+				// check if we have a listener, otherwise invalid configuration
+				if (listener == null) {
+					// exception
 				}
 
-				Server.this.shutdown();
+				// log
+				if (LOG.isDebugEnabled()) {
+					LOG.debug("Start to initialize listener '" + listener.toString()
+							+ "' on port '" + c.getPort() + "'...");
+				}
+
+				// open the port to listen for connections
+				listener.initialize(c);
+
+				// add the listener because it initialized successfully
+				listeners.add(listener);
 			}
-		});
 
-		// keep the opened listeners
-		this.listeners = Collections.synchronizedList(listeners);
+			// if initialization worked we can open each listener
+			for (final IListener listener : listeners) {
 
-		synchronized (serverThread) {
+				// log
+				if (LOG.isDebugEnabled()) {
+					LOG.debug("Opening listener '" + listener.toString() + "'...");
+				}
+
+				listener.open();
+			}
+
+			// register the shutdown hook to finish the whole thing gracefully
+			Runtime.getRuntime().addShutdownHook(new Thread() {
+
+				@Override
+				public void run() {
+					if (LOG.isInfoEnabled()) {
+						LOG.info("The server will be shut down because of a ShutdownHook.");
+					}
+
+					Server.this.shutdown();
+				}
+			});
+
+			// keep the opened listeners
+			this.listeners = Collections.synchronizedList(listeners);
+
 			try {
 				serverThread.wait();
 			} catch (final InterruptedException e) {
@@ -163,40 +169,47 @@ public class Server {
 	 * Used to shutdown the server correctly, i.e. inform all listeners to
 	 * shutdown and let them shutdown successfully.
 	 */
-	public synchronized void shutdown() {
+	public void shutdown() {
 
-		if (listeners == null) {
-			// nothing to do
+		if (serverThread == null) {
+			return;
+		} else if (listeners == null) {
+			// do nothing
 		} else {
 
-			for (final IListener listener : listeners) {
+			synchronized (serverThread) {
+				for (final IListener listener : listeners) {
 
-				// log
-				if (LOG.isDebugEnabled()) {
-					LOG.debug("Closing listener '" + listener.toString() + "'...");
-				}
+					// log
+					if (LOG.isDebugEnabled()) {
+						LOG.debug("Closing listener '" + listener.toString() + "'...");
+					}
 
-				// if a listener cannot shutdown we still should try to shutdown the
-				// others correctly
-				try {
-					listener.close();
-				} catch (final RuntimeException e) {
-					if (LOG.isErrorEnabled()) {
-						LOG.error(
-								"Error while closing the listener '" + listener.toString()
-										+ "'", e);
+					// if a listener cannot shutdown we still should try to shutdown the
+					// others correctly
+					try {
+						listener.close();
+					} catch (final RuntimeException e) {
+						if (LOG.isErrorEnabled()) {
+							LOG.error(
+									"Error while closing the listener '" + listener.toString()
+											+ "'", e);
+						}
 					}
 				}
-			}
 
-			// reset the listeners
-			listeners = null;
+				// reset the listeners
+				listeners = null;
+			}
 		}
 
 		// notify the thread to be awaken again
 		synchronized (serverThread) {
 			serverThread.notifyAll();
 		}
+
+		// release thread
+		serverThread = null;
 	}
 
 	/**
