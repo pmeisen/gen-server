@@ -11,7 +11,6 @@ import java.net.UnknownHostException;
 
 import net.meisen.general.server.Server;
 import net.meisen.general.server.api.IServerSettings;
-import net.meisen.general.server.control.ServerControllerException;
 
 /**
  * Helper class for tests.
@@ -50,6 +49,19 @@ public class TestHelper {
 		return server.getServerSettings();
 	}
 
+	/**
+	 * Helper method to send a message to the specified <code>host</code> on the
+	 * specified <code>port</code>.
+	 * 
+	 * @param msg
+	 *          the message to be send
+	 * @param host
+	 *          the host to send to
+	 * @param port
+	 *          the port to send to
+	 * 
+	 * @return the answer received on the <code>Socket</code>
+	 */
 	public static String sendMessage(final String msg, final String host,
 			final int port) {
 

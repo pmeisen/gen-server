@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<server xmlns="http://dev.meisen.net/server/config" 
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns:ed="http://dev.meisen.net/server/config/extension"
+        xsi:schemaLocation="http://dev.meisen.net/server/config http://dev.meisen.net/xsd/server/serverConfig.xsd
+                            http://dev.meisen.net/server/config/extension http://dev.meisen.net/xsd/server/serverConfigExtension.xsd">
+
+  <connector id="OutputWithTestPrintStream" port="10000" listener="net.meisen.general.server.listener.OutputListener">
+  	<ed:extension>
+  	  <output class="net.meisen.general.server.listener.mock.TestPrintStream" />
+  	</ed:extension>
+  </connector>
+  
+  <connector id="OutputWithSpringReference" port="10001" listener="net.meisen.general.server.listener.OutputListener">
+  	<ed:extension>
+  	  <output ref="testPrintStream" />
+  	</ed:extension>
+  </connector>
+</server>
