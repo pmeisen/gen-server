@@ -24,6 +24,10 @@
           <key><util:constant static-field="net.meisen.general.server.listener.control.ControlListener.NAME" /></key>
           <value>net.meisen.general.server.listener.control.ControlListener</value>
         </entry>
+        <entry>
+          <key><util:constant static-field="net.meisen.general.server.listener.OutputListener.NAME" /></key>
+          <value>net.meisen.general.server.listener.OutputListener</value>
+        </entry>
       </map>
     </property>
    </bean>

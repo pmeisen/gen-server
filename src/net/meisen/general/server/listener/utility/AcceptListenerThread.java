@@ -28,10 +28,10 @@ public abstract class AcceptListenerThread extends Thread {
 	 * incoming connections from.
 	 * 
 	 * @param port
-	 *          the port to retrieve the incoming connection from
+	 *            the port to retrieve the incoming connection from
 	 * 
 	 * @throws IOException
-	 *           if the <code>Socket</code> cannot be created
+	 *             if the <code>Socket</code> cannot be created
 	 */
 	public AcceptListenerThread(final int port) throws IOException {
 		serverSocket = new ServerSocket(port);
@@ -56,7 +56,8 @@ public abstract class AcceptListenerThread extends Thread {
 		// do while incoming connections can be accepted
 		final ServerSocket serverSocket = getServerSocket();
 		if (LOG.isInfoEnabled()) {
-			LOG.info("Start listening on port " + serverSocket.getLocalPort() + "...");
+			LOG.info("Start listening on port " + serverSocket.getLocalPort()
+					+ "...");
 		}
 
 		while (curState) {
@@ -66,7 +67,8 @@ public abstract class AcceptListenerThread extends Thread {
 
 				// log the incoming connection
 				if (LOG.isDebugEnabled()) {
-					LOG.debug("Incoming connection from " + socket.getInetAddress());
+					LOG.debug("Incoming connection from "
+							+ socket.getInetAddress());
 				}
 
 				// start the thread to handle the connection
@@ -90,7 +92,8 @@ public abstract class AcceptListenerThread extends Thread {
 
 		if (firstState) {
 			if (LOG.isInfoEnabled()) {
-				LOG.info("End listening on port " + serverSocket.getLocalPort() + "...");
+				LOG.info("End listening on port " + serverSocket.getLocalPort()
+						+ "...");
 			}
 
 			// make sure the socket is closed
@@ -103,14 +106,18 @@ public abstract class AcceptListenerThread extends Thread {
 	 * specified <code>Socket</code>
 	 * 
 	 * @param socket
-	 *          the <code>Socket</code> on which data is send by the client
+	 *            the <code>Socket</code> on which data is send by the client
 	 * 
 	 * @return a new <code>Thread</code> which hanldes the data retrieved on the
 	 *         specified <code>Socket</code>
+	 *         
+	 * @throws IOException
+	 *             if the <code>Socket</code> cannot be bind or used
 	 * 
 	 * @see WorkerThread
 	 */
-	protected abstract Thread createWorkerThread(final Socket socket);
+	protected abstract Thread createWorkerThread(final Socket socket)
+			throws IOException;
 
 	@Override
 	public void interrupt() {
@@ -121,7 +128,8 @@ public abstract class AcceptListenerThread extends Thread {
 	}
 
 	/**
-	 * Closes the listener and makes sure that no further connections are handled.
+	 * Closes the listener and makes sure that no further connections are
+	 * handled.
 	 */
 	public void close() {
 		final ServerSocket serverSocket = getServerSocket();

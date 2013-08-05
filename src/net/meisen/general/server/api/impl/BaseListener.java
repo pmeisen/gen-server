@@ -34,10 +34,11 @@ public abstract class BaseListener implements IListener {
 		// get the specified port
 		final int specPort = c.getPort();
 		if (getExceptionRegistry() == null) {
-			throw new NullPointerException("The exceptionRegitry cannot be null.");
+			throw new NullPointerException(
+					"The exceptionRegitry cannot be null.");
 		} else if (specPort < 1 || specPort > 65535) {
-			getExceptionRegistry().throwException(BaseListenerException.class, 1000,
-					specPort);
+			getExceptionRegistry().throwException(BaseListenerException.class,
+					1000, specPort);
 		}
 
 		// set the values
@@ -49,8 +50,8 @@ public abstract class BaseListener implements IListener {
 
 		// check if we have a running thread
 		if (listenerThread != null) {
-			getExceptionRegistry().throwException(BaseListenerException.class, 1003,
-					toString());
+			getExceptionRegistry().throwException(BaseListenerException.class,
+					1003, toString());
 		}
 
 		// log it
@@ -60,24 +61,28 @@ public abstract class BaseListener implements IListener {
 
 		// start the new thread
 		try {
-			listenerThread = new AcceptListenerThread(getPort()) {
-
-				@Override
-				protected Thread createWorkerThread(final Socket socket) {
-					return BaseListener.this.createWorkerThread(socket);
-				}
-			};
+			listenerThread = createAcceptListenerThread();
 		} catch (final BindException e) {
-			getExceptionRegistry().throwException(BaseListenerException.class, 1002,
-					e, getPort());
+			getExceptionRegistry().throwException(BaseListenerException.class,
+					1002, e, getPort());
 		} catch (final IOException e) {
-			getExceptionRegistry().throwException(BaseListenerException.class, 1001,
-					e, getPort());
+			getExceptionRegistry().throwException(BaseListenerException.class,
+					1001, e, getPort());
 		}
 
 		// run the thread
 		listenerThread.setDaemon(false);
 		listenerThread.start();
+	}
+
+	protected AcceptListenerThread createAcceptListenerThread() throws IOException {
+		return new AcceptListenerThread(getPort()) {
+
+			@Override
+			protected Thread createWorkerThread(final Socket socket) {
+				return BaseListener.this.createWorkerThread(socket);
+			}
+		};
 	}
 
 	protected Thread createWorkerThread(Socket socket) {
@@ -92,7 +97,8 @@ public abstract class BaseListener implements IListener {
 
 					while (!out.checkError()) {
 						final String input = in.readLine();
-						final String output = BaseListener.this.handleInput(input);
+						final String output = BaseListener.this
+								.handleInput(input);
 
 						// write the answer
 						if (output == null) {
@@ -102,8 +108,8 @@ public abstract class BaseListener implements IListener {
 						}
 					}
 				} catch (final IOException e) {
-					getExceptionRegistry().throwException(BaseListenerException.class,
-							1004, e, getPort());
+					getExceptionRegistry().throwException(
+							BaseListenerException.class, 1004, e, getPort());
 				}
 			}
 		};
@@ -132,5 +138,9 @@ public abstract class BaseListener implements IListener {
 			listenerThread.close();
 			listenerThread = null;
 		}
+	}
+
+	public boolean isClosed() {
+		return listenerThread == null || listenerThread.isClosed();
 	}
 }
