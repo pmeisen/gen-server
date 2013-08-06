@@ -5,6 +5,12 @@ import java.util.Collection;
 
 import net.meisen.general.server.api.IControlMessage;
 
+/**
+ * Message send as answer if a <code>null</code> was received.
+ * 
+ * @author pmeisen
+ * 
+ */
 public class NullReceivedMessage implements IControlMessage {
 
 	@Override
@@ -14,7 +20,7 @@ public class NullReceivedMessage implements IControlMessage {
 
 	@Override
 	public Collection<MessageType> getType() {
-		return Arrays.asList(MessageType.RECEIVEDSTATUS);
+		return Arrays.asList(MessageType.REPLYSTATUS);
 	}
 
 	@Override

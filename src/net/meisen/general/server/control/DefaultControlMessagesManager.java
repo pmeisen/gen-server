@@ -15,6 +15,14 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 
+/**
+ * The default implementation of a <code>ControlMessagesManager</code>.
+ * 
+ * @see IControlMessagesManager
+ * 
+ * @author pmeisen
+ * 
+ */
 public class DefaultControlMessagesManager implements IControlMessagesManager {
 	private final static Logger LOG = LoggerFactory
 			.getLogger(DefaultControlMessagesManager.class);
@@ -29,11 +37,20 @@ public class DefaultControlMessagesManager implements IControlMessagesManager {
 	@Qualifier("coreConfiguration")
 	private IConfiguration configuration;
 
+	/**
+	 * Adds a <code>ControlMessage</code> to the manager.
+	 * 
+	 * @param controlMessageClazz
+	 *            the class of the <code>ControlMessage</code> to be added
+	 * 
+	 * @see IControlMessage
+	 */
 	public void addControlMessage(
 			final Class<? extends IControlMessage> controlMessageClazz) {
 
 		if (controlMessageClazz == null) {
-			exceptionRegistry.throwException(ControlMessageException.class, 1002);
+			exceptionRegistry.throwException(ControlMessageException.class,
+					1002);
 		}
 
 		// create the instance
@@ -41,8 +58,8 @@ public class DefaultControlMessagesManager implements IControlMessagesManager {
 		try {
 			msg = configuration.createInstance(controlMessageClazz);
 		} catch (final Exception e) {
-			exceptionRegistry.throwException(ControlMessageException.class, 1000, e,
-					controlMessageClazz.getName());
+			exceptionRegistry.throwException(ControlMessageException.class,
+					1000, e, controlMessageClazz.getName());
 		}
 
 		// validate the identifier
@@ -54,12 +71,14 @@ public class DefaultControlMessagesManager implements IControlMessagesManager {
 			if (knownMsg.getClass().equals(controlMessageClazz)) {
 				// nothing to do it was just defined twice
 			} else if (LOG.isWarnEnabled()) {
-				LOG.warn("Another message with id '" + id + "' is already added ('"
+				LOG.warn("Another message with id '" + id
+						+ "' is already added ('"
 						+ controlMessageClazz.getName() + "').");
 			}
 		} else {
 			if (LOG.isTraceEnabled()) {
-				LOG.trace("Adding new message of type '" + controlMessageClazz + "'");
+				LOG.trace("Adding new message of type '" + controlMessageClazz
+						+ "'");
 			}
 
 			controlMessages.put(id, msg);
@@ -70,16 +89,14 @@ public class DefaultControlMessagesManager implements IControlMessagesManager {
 	 * Validate the identifier and return a unified name.
 	 * 
 	 * @param id
-	 *          the id to be validated and unified
-	 * @param controlMessageClazz
-	 *          the class of the IControlMessage, cannot be <code>null</code> and
-	 *          is just used for logging purposes
+	 *            the id to be validated and unified
 	 * 
 	 * @return the unified id
 	 */
 	protected String validateId(final String id) {
 		if (id == null || "".equals(id.trim())) {
-			exceptionRegistry.throwException(ControlMessageException.class, 1001);
+			exceptionRegistry.throwException(ControlMessageException.class,
+					1001);
 
 			// never happens
 			return null;
@@ -91,6 +108,14 @@ public class DefaultControlMessagesManager implements IControlMessagesManager {
 		return unifiedId;
 	}
 
+	/**
+	 * Adds several <code>ControlMessage</code> classes to the manager.
+	 * 
+	 * @param controlMessageClazzes
+	 *            the classes to be added
+	 * 
+	 * @see IControlMessage
+	 */
 	public void addControlMessages(
 			final Collection<Class<? extends IControlMessage>> controlMessageClazzes) {
 		for (final Class<? extends IControlMessage> clazz : controlMessageClazzes) {

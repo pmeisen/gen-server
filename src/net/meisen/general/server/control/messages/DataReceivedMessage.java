@@ -5,6 +5,12 @@ import java.util.Collection;
 
 import net.meisen.general.server.api.IControlMessage;
 
+/**
+ * Message send as answer if a non-<code>null</code> value was received.
+ * 
+ * @author pmeisen
+ * 
+ */
 public class DataReceivedMessage implements IControlMessage {
 
 	@Override
@@ -14,9 +20,9 @@ public class DataReceivedMessage implements IControlMessage {
 
 	@Override
 	public Collection<MessageType> getType() {
-		return Arrays.asList(MessageType.RECEIVEDSTATUS);
+		return Arrays.asList(MessageType.REPLYSTATUS);
 	}
-	
+
 	@Override
 	public void execute() {
 		throw new IllegalStateException("Cannot execute a DataReceivedMessage");

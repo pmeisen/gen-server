@@ -18,6 +18,15 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 
+/**
+ * The base-implementation of a <code>Listener</code>.
+ * 
+ * @see AcceptListenerThread
+ * @see WorkerThread
+ * 
+ * @author pmeisen
+ * 
+ */
 public abstract class BaseListener implements IListener {
 	private final Logger LOG = LoggerFactory.getLogger(this.getClass());
 
@@ -75,7 +84,18 @@ public abstract class BaseListener implements IListener {
 		listenerThread.start();
 	}
 
-	protected AcceptListenerThread createAcceptListenerThread() throws IOException {
+	/**
+	 * Creates the instance of the <code>AcceptListenerThread</code>, i.e. the
+	 * one which is used to accept request on a <code>Socket</code>.
+	 * 
+	 * @return the <code>AcceptListenerThread</code> used to accept requests
+	 * 
+	 * @throws IOException
+	 *             if the <code>AcceptListenerThread</code> cannot be created,
+	 *             e.g. opened
+	 */
+	protected AcceptListenerThread createAcceptListenerThread()
+			throws IOException {
 		return new AcceptListenerThread(getPort()) {
 
 			@Override
@@ -85,7 +105,19 @@ public abstract class BaseListener implements IListener {
 		};
 	}
 
-	protected Thread createWorkerThread(Socket socket) {
+	/**
+	 * Creates a <code>WorkerThread</code> which handles requests. This method
+	 * is only called, if the<code>{@link #createAcceptListenerThread()}</code>
+	 * supports it. The default implementation calls this method to create the
+	 * <code>WorkerThread</code>.
+	 * 
+	 * @param socket
+	 *            the <code>Socket</code> to handle the request on
+	 * 
+	 * @return the <code>Thread</code> which will handle the request on the
+	 *         <code>Socket</code> when started
+	 */
+	protected Thread createWorkerThread(final Socket socket) {
 		return new WorkerThread(socket) {
 
 			@Override
@@ -115,14 +147,35 @@ public abstract class BaseListener implements IListener {
 		};
 	}
 
+	/**
+	 * Method used to handle a specific input. This method is only called if the
+	 * default <code>WorkerThread</code> is used. Otherwise the call might not
+	 * be done.
+	 * 
+	 * @param input
+	 *            the input retrieved on the <code>Socket</code>
+	 * 
+	 * @return the message to reply
+	 */
 	protected String handleInput(final String input) {
 		return "";
 	}
 
+	/**
+	 * Gets the <code>ExceptionRegistry</code> used by the
+	 * <code>BaseListener</code>.
+	 * 
+	 * @return the <code>ExceptionRegistry</code>
+	 */
 	protected IExceptionRegistry getExceptionRegistry() {
 		return exceptionRegistry;
 	}
 
+	/**
+	 * Gets the port used by the <code>Listener</code>.
+	 * 
+	 * @return the port used by the <code>Listener</code>
+	 */
 	public int getPort() {
 		return port;
 	}
@@ -140,6 +193,13 @@ public abstract class BaseListener implements IListener {
 		}
 	}
 
+	/**
+	 * Checks if the <code>listenerThread</code>, i.e. the thread connections
+	 * are accepted with, is closed.
+	 * 
+	 * @return <code>true</code> if no request are handled anymore, otherwise
+	 *         <code>false</code>
+	 */
 	public boolean isClosed() {
 		return listenerThread == null || listenerThread.isClosed();
 	}

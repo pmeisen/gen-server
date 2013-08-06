@@ -9,6 +9,12 @@ import net.meisen.general.server.api.IControlMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 
+/**
+ * Message send to shut-down the server
+ * 
+ * @author pmeisen
+ * 
+ */
 public class ShutdownMessage implements IControlMessage {
 
 	@Autowired
