@@ -123,7 +123,13 @@
           </xsl:for-each>
           
           <!-- check if we have any text and add it -->
-          <xsl:if test="normalize-space(text()) != ''">
+          <xsl:variable name="nodeText">
+	          <xsl:for-each select="text()">
+    	      	<xsl:value-of select="."/>
+        	  </xsl:for-each>
+          </xsl:variable>
+          
+          <xsl:if test="normalize-space($nodeText) != ''">
             <entry key="" value="{$nodeText}" />
           </xsl:if>
         </map>

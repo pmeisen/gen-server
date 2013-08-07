@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<server xmlns="http://dev.meisen.net/server/config" 
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns:ed="http://dev.meisen.net/server/config/extension"
+        xsi:schemaLocation="http://dev.meisen.net/server/config http://dev.meisen.net/xsd/server/serverConfig.xsd
+                            http://dev.meisen.net/server/config/extension http://dev.meisen.net/xsd/server/serverConfigExtension.xsd">
+
+  <connector port="666" listener="DUMMY">
+  	<ed:extension>
+      <servlet value="aValue">
+      	<script test="aTest">
+			this is some script;
+      	</script>
+      	net.meisen.general.server.http.listener.servlets.ScriptedServlet
+      </servlet>
+  	</ed:extension>
+
+  </connector>
+</server>

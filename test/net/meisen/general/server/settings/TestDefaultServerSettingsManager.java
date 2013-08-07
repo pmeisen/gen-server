@@ -55,7 +55,8 @@ public class TestDefaultServerSettingsManager {
 	}
 
 	/**
-	 * Tests the loading of the server configuration with defined user-properties
+	 * Tests the loading of the server configuration with defined
+	 * user-properties
 	 */
 	@Test
 	public void testWithUserProperties() {
@@ -141,7 +142,8 @@ public class TestDefaultServerSettingsManager {
 
 		// just use the system settings to ensure the correct selector
 		try {
-			TestHelper.getSettings("sbconfigurator-core-useSystemProperties.xml");
+			TestHelper
+					.getSettings("sbconfigurator-core-useSystemProperties.xml");
 			fail("Exception not thrown");
 		} catch (final Exception e) {
 			assertEquals(ServerSettingsException.class, e.getClass());
@@ -164,7 +166,8 @@ public class TestDefaultServerSettingsManager {
 
 		// just use the system settings to ensure the correct selector
 		try {
-			TestHelper.getSettings("sbconfigurator-core-useSystemProperties.xml");
+			TestHelper
+					.getSettings("sbconfigurator-core-useSystemProperties.xml");
 			fail("Exception not thrown");
 		} catch (final Exception e) {
 			assertEquals(ServerSettingsException.class, e.getClass());
@@ -183,7 +186,8 @@ public class TestDefaultServerSettingsManager {
 		// we just want to load the simpleConnector
 		System.setProperty("server.settings.selector",
 				"server-test-invalidConnectorsByListener.xml");
-		System.setProperty("server.settings.failOnUnresolvableListeners", "false");
+		System.setProperty("server.settings.failOnUnresolvableListeners",
+				"false");
 		Locale.setDefault(new Locale("en"));
 
 		// just use the system settings to ensure the correct selector
@@ -288,5 +292,45 @@ public class TestDefaultServerSettingsManager {
 
 			i++;
 		}
+	}
+
+	/**
+	 * Tests the reading of inner text, when another child or children are used
+	 * within the tag.
+	 */
+	@Test
+	public void testInnerText() {
+		System.setProperty("server.settings.selector",
+				"server-test-extendedConnectorsWithInnerText.xml");
+
+		// just use the system settings to ensure the correct selector
+		final IServerSettings settings = TestHelper
+				.getSettings("sbconfigurator-core-useSystemProperties.xml");
+
+		// check if there is one
+		assertEquals(1, settings.getConnectorSettings().size());
+
+		// validate the connector
+		final Connector connector = Collections.get(0,
+				settings.getConnectorSettings());
+
+		// check the extensions of this one connector
+		final List<Extension> extensions = connector.getExtensions();
+		assertEquals(1, extensions.size());
+
+		// get the one extension
+		final Extension extension = Collections.get(0, extensions);
+		assertEquals("servlet", extension.getId());
+		assertEquals("aValue", extension.getProperty("value"));
+		assertEquals(
+				"net.meisen.general.server.http.listener.servlets.ScriptedServlet",
+				extension.<String> getProperty("").trim());
+		assertTrue(extension.hasExtension("script"));
+
+		// get the script extension
+		final Extension scriptExtension = extension.getExtension("script");
+		assertEquals("aTest", scriptExtension.getProperty("test"));
+		assertEquals("this is some script;", scriptExtension
+				.<String> getProperty("").trim());
 	}
 }
