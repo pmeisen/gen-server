@@ -333,4 +333,39 @@ public class TestDefaultServerSettingsManager {
 		assertEquals("this is some script;", scriptExtension
 				.<String> getProperty("").trim());
 	}
+
+	/**
+	 * Tests the usage of <code>Extension</code> instances with the same id and
+	 * their retrieval using {@link Extension#getExtensions(String)}.
+	 */
+	@Test
+	public void testExtensionsWithSameId() {
+		System.setProperty("server.settings.selector",
+				"server-test-severalExtensionsWithSameId.xml");
+
+		// just use the system settings to ensure the correct selector
+		final IServerSettings settings = TestHelper
+				.getSettings("sbconfigurator-core-useSystemProperties.xml");
+
+		// check if there is one
+		assertEquals(1, settings.getConnectorSettings().size());
+
+		// validate the connector
+		final Connector connector = Collections.get(0,
+				settings.getConnectorSettings());
+
+		// check the extensions of this one connector
+		final List<Extension> extensions = connector.getExtensions("entry");
+		assertEquals(3, extensions.size());
+
+		// get the one extension
+		final Extension firstExtension = Collections.get(0, extensions);
+		assertEquals("entry", firstExtension.getId());
+		assertEquals(new Integer(1), firstExtension.<Integer> getProperty("nr"));
+
+		// get the script extension
+		final Extension thirdExtension = Collections.get(2, extensions);
+		assertEquals(new Integer(3), thirdExtension.<Integer> getProperty("nr"));
+		assertEquals("Special", thirdExtension.getProperty(""));
+	}
 }

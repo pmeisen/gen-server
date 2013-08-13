@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<server xmlns="http://dev.meisen.net/server/config" 
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns:ed="http://dev.meisen.net/server/config/extension"
+        xsi:schemaLocation="http://dev.meisen.net/server/config http://dev.meisen.net/xsd/server/serverConfig.xsd
+                            http://dev.meisen.net/server/config/extension http://dev.meisen.net/xsd/server/serverConfigExtension.xsd">
+
+  <connector port="666" listener="DUMMY">
+  	<ed:extension>
+  	  <entry nr="1" />
+	  <entry nr="2" />
+	  <entry nr="3">Special</entry>
+  	</ed:extension>
+  </connector>
+  
+</server>
