@@ -13,7 +13,7 @@
   </bean>
   
   <!-- load some other beans into the configuration -->
-  <sbc:loader id="serverBeans" selector="net/meisen/general/server/server-beans.xml" />
+  <sbc:loader id="serverBeans" selector="serverBeans.xml" />
   
   <!-- we define a loader for the default settings, which are always loaded -->
   <sbc:loader id="serverDefaultConfigurationLoader" validationEnabled="true" beanOverridingAllowed="false" 
