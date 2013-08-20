@@ -29,7 +29,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
  */
 @RunWith(JUnitConfigurationRunner.class)
 @ContextClass(TestOutputListener.class)
-@ContextFile("sbconfigurator-core-testOutputListener.xml")
+@ContextFile("testOutputListener-core.xml")
 public class TestOutputListener {
 
 	@Autowired(required = true)

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:sbc="http://dev.meisen.net/sbconfigurator/ns"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+       					   http://dev.meisen.net/sbconfigurator/ns http://dev.meisen.net/xsd/sbconfigurator/sbconfigurator-ns.xsd">
+    
+  <!-- include the default configuration -->
+  <import resource="classpath:/net/meisen/general/server/sbconfigurator-core.xml"/>
+  
+  <!-- set the properties for this test -->
+  <bean class="net.meisen.general.sbconfigurator.config.placeholder.SpringPropertyHolder">
+  	<property name="localOverride" value="true" />
+  	<property name="location" value="classpath:/net/meisen/general/server/settings/server.properties" />
+    <property name="properties">
+      <value>
+        server.settings.selector=net/meisen/general/server/listener/testOutputListener-connectors.xml
+      </value>
+    </property>
+  </bean>
+  
+  <!-- add some beans needed by the test -->
+  <sbc:loader id="testBeans" selector="net/meisen/general/server/listener/testOutputListener-beans.xml" />
+</beans>

@@ -57,16 +57,12 @@ public class TestServer {
 		assertTrue(foundServer);
 
 		// shut the server down
-		System.out.println("SHUTDOWN");
 		server.shutdown();
-		System.out.println("SHUTDOWN DONW");
 
 		// give some time to shutdown
 		Thread.sleep(200);
 
 		// now check if it was closed
 		assertEquals(threadSize, Thread.getAllStackTraces().keySet().size());
-		
-		System.out.println("END");
 	}
 }

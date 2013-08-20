@@ -1,13 +1,28 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 
-<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:sbc="http://dev.meisen.net/sbconfigurator/ns"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+       					   http://dev.meisen.net/sbconfigurator/ns http://dev.meisen.net/xsd/sbconfigurator/sbconfigurator-ns.xsd">
     
   <!-- include the default configuration -->
   <import resource="classpath:/net/meisen/general/sbconfigurator/sbconfigurator-core.xml"/>
-  
+   
   <!-- get the properties used for the whole configuration -->
   <bean class="net.meisen.general.sbconfigurator.config.placeholder.SpringPropertyHolder">
     <property name="location" value="classpath:/net/meisen/general/server/settings/server.properties" />
   </bean>
+  
+  <!-- load some other beans into the configuration -->
+  <sbc:loader id="serverBeans" selector="net/meisen/general/server/server-beans.xml" />
+  
+  <!-- we define a loader for the default settings, which are always loaded -->
+  <sbc:loader id="serverDefaultConfigurationLoader" validationEnabled="true" beanOverridingAllowed="false" 
+              selector="net/meisen/general/server/settings/defaultServerSettings.xml" 
+  		      loadFromClassPath="true" loadFromWorkingDir="false"
+              xslt="net/meisen/general/server/settings/serverConfigToSpringContext.xslt" />
+
+  <!-- now use the same loader to load another configuration instance, which can overload the default -->
+  <sbc:loader id="serverConfigurationLoader" validationEnabled="true" beanOverridingAllowed="false" loadFromClassPath="true" loadFromWorkingDir="false"
+              selector="${server.settings.selector}" 
+              xslt="net/meisen/general/server/settings/serverConfigToSpringContext.xslt" />
 </beans>
