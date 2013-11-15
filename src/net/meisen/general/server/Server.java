@@ -93,9 +93,11 @@ public class Server {
 			throw new ServerInitializeException(
 					"The Server was not created correctly, did you use Server.createServer().");
 		} else if (finalServerSettings == null) {
-			exceptionRegistry.throwException(ServerInitializeException.class, 1000);
+			exceptionRegistry.throwException(ServerInitializeException.class,
+					1000);
 		} else if (this.listeners != null) {
-			exceptionRegistry.throwException(ServerInitializeException.class, 1003);
+			exceptionRegistry.throwException(ServerInitializeException.class,
+					1003);
 		}
 
 		// define the current thread if none is used so far
@@ -117,8 +119,9 @@ public class Server {
 
 				// log
 				if (LOG.isDebugEnabled()) {
-					LOG.debug("Start to initialize listener '" + listener.toString()
-							+ "' on port '" + c.getPort() + "'...");
+					LOG.debug("Start to initialize listener '"
+							+ listener.toString() + "' on port '" + c.getPort()
+							+ "'...");
 				}
 
 				// open the port to listen for connections
@@ -133,7 +136,8 @@ public class Server {
 
 				// log
 				if (LOG.isDebugEnabled()) {
-					LOG.debug("Opening listener '" + listener.toString() + "'...");
+					LOG.debug("Opening listener '" + listener.toString()
+							+ "'...");
 				}
 
 				listener.open();
@@ -195,18 +199,19 @@ public class Server {
 
 					// log
 					if (LOG.isDebugEnabled()) {
-						LOG.debug("Closing listener '" + listener.toString() + "'...");
+						LOG.debug("Closing listener '" + listener.toString()
+								+ "'...");
 					}
 
-					// if a listener cannot shutdown we still should try to shutdown the
+					// if a listener cannot shutdown we still should try to
+					// shutdown the
 					// others correctly
 					try {
 						listener.close();
 					} catch (final RuntimeException e) {
 						if (LOG.isErrorEnabled()) {
-							LOG.error(
-									"Error while closing the listener '" + listener.toString()
-											+ "'", e);
+							LOG.error("Error while closing the listener '"
+									+ listener.toString() + "'", e);
 						}
 					}
 				}
@@ -226,7 +231,8 @@ public class Server {
 	}
 
 	/**
-	 * Gets the loaded <code>ServerSettings</code> of <code>this</code> instance.
+	 * Gets the loaded <code>ServerSettings</code> of <code>this</code>
+	 * instance.
 	 * 
 	 * @return the <code>ServerSettings</code> used by <code>this</code>
 	 */
@@ -235,8 +241,8 @@ public class Server {
 	}
 
 	/**
-	 * Creates a <code>Server</code> instance using the default configuration file
-	 * found on class-path.
+	 * Creates a <code>Server</code> instance using the default configuration
+	 * file found on class-path.
 	 * 
 	 * @return the created <code>Server</code> instance
 	 */
@@ -249,20 +255,37 @@ public class Server {
 	 * <code>coreConfig</code> file, which is searched for on the class-path.
 	 * 
 	 * @param coreConfig
-	 *          the file to load the server from
+	 *            the file to load the server from
 	 * 
 	 * @return the created <code>Server</code> instance
 	 */
 	public static Server createServer(final String coreConfig) {
+		return createServer(coreConfig, Server.class);
+	}
 
+	/**
+	 * Creates a <code>Server</code> instance using the defined
+	 * <code>coreConfig</code> file, which is searched for on the class-path.
+	 * 
+	 * @param coreConfig
+	 *            the file to load the server from
+	 * @param context
+	 *            the context to look for the defined <code>coreConfig</code> at
+	 *            (i.e. the class)
+	 * 
+	 * @return the created <code>Server</code> instance
+	 */
+	public static Server createServer(final String coreConfig,
+			final Class<?> context) {
 		// load the coreSettings
 		try {
 			final ConfigurationCoreSettings settings = ConfigurationCoreSettings
-					.loadCoreSettings(coreConfig, Server.class);
+					.loadCoreSettings(coreConfig, context);
 
 			return settings.getConfiguration().getModule("server");
 		} catch (final RuntimeException e) {
-			// spring errors are hard to understand, let's get back to the normal
+			// spring errors are hard to understand, let's get back to the
+			// normal
 			// exception and forget the spring exceptions
 			final RuntimeException noneSpringException = SpringHelper
 					.getNoneSpringBeanException(e, RuntimeException.class);
@@ -284,7 +307,7 @@ public class Server {
 	 * registers a shut-down hook to be shutdown gracefully.
 	 * 
 	 * @param args
-	 *          the arguments passed to the main-method
+	 *            the arguments passed to the main-method
 	 */
 	public static void main(final String[] args) {
 
