@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 
 <xsl:stylesheet
-		xmlns="http://www.springframework.org/schema/beans"  
+        xmlns="http://www.springframework.org/schema/beans"  
         xmlns:sc="http://dev.meisen.net/server/config"
         xmlns:scd="http://dev.meisen.net/server/config/default"
         xmlns:sce="http://dev.meisen.net/server/config/extension"
