@@ -16,6 +16,10 @@ import org.springframework.beans.factory.annotation.Qualifier;
  * 
  */
 public class ShutdownMessage implements IControlMessage {
+	/**
+	 * the identifier used for the shutdown message
+	 */
+	public final static String MESSAGE_ID = "SHUTDOWN";
 
 	@Autowired
 	@Qualifier("server")
@@ -23,7 +27,7 @@ public class ShutdownMessage implements IControlMessage {
 
 	@Override
 	public String getMessageIdentifier() {
-		return "SHUTDOWN";
+		return MESSAGE_ID;
 	}
 
 	@Override

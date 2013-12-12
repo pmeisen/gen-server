@@ -12,10 +12,14 @@ import net.meisen.general.server.api.IControlMessage;
  * 
  */
 public class NullReceivedMessage implements IControlMessage {
-
+	/**
+	 * the identifier used for the message
+	 */
+	public final static String MESSAGE_ID = "NLRCVD";
+	
 	@Override
 	public String getMessageIdentifier() {
-		return "NLRCVD";
+		return MESSAGE_ID;
 	}
 
 	@Override
