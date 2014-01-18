@@ -146,7 +146,8 @@ public class TestDefaultServerSettingsManager {
 					.getSettings("sbconfigurator-core-useSystemProperties.xml");
 			fail("Exception not thrown");
 		} catch (final Exception e) {
-			assertEquals(ServerSettingsException.class, e.getClass());
+			assertEquals(e.getMessage(), ServerSettingsException.class,
+					e.getClass());
 			assertEquals(
 					"The port 888 is used multiple times within with the settings.",
 					e.getMessage());
@@ -170,7 +171,8 @@ public class TestDefaultServerSettingsManager {
 					.getSettings("sbconfigurator-core-useSystemProperties.xml");
 			fail("Exception not thrown");
 		} catch (final Exception e) {
-			assertEquals(ServerSettingsException.class, e.getClass());
+			assertEquals(e.getMessage(), ServerSettingsException.class,
+					e.getClass());
 			assertEquals(
 					"The defined listener 'UNKNOWN' of 'Connector on port 888 ('UNKNOWN')' cannot be created, please check the availability.",
 					e.getMessage());
