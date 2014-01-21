@@ -7,6 +7,7 @@ import java.net.BindException;
 import java.net.Socket;
 
 import net.meisen.general.genmisc.exceptions.registry.IExceptionRegistry;
+import net.meisen.general.sbconfigurator.api.IConfiguration;
 import net.meisen.general.server.api.IListener;
 import net.meisen.general.server.api.impl.exceptions.BaseListenerException;
 import net.meisen.general.server.listener.utility.AcceptListenerThread;
@@ -31,7 +32,7 @@ public abstract class BaseListener implements IListener {
 	private final Logger LOG = LoggerFactory.getLogger(this.getClass());
 
 	@Autowired(required = false)
-	@Qualifier("exceptionRegistry")
+	@Qualifier(IConfiguration.coreExceptionRegistryId)
 	private IExceptionRegistry exceptionRegistry;
 
 	private int port = -1;

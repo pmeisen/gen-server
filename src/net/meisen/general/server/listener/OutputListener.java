@@ -30,7 +30,7 @@ public class OutputListener extends BaseListener {
 	private PrintStream out = System.out;
 
 	@Autowired
-	@Qualifier("exceptionRegistry")
+	@Qualifier(IConfiguration.coreExceptionRegistryId)
 	private IExceptionRegistry exceptionRegistry;
 
 	@Autowired

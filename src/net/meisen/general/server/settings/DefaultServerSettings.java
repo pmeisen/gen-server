@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 
 import net.meisen.general.genmisc.exceptions.registry.IExceptionRegistry;
+import net.meisen.general.sbconfigurator.api.IConfiguration;
 import net.meisen.general.server.api.IConnectorValidator;
 import net.meisen.general.server.api.IListener;
 import net.meisen.general.server.api.IServerSettings;
@@ -34,7 +35,7 @@ public class DefaultServerSettings implements IServerSettings {
 			.getLogger(DefaultServerSettings.class);
 
 	@Autowired
-	@Qualifier("exceptionRegistry")
+	@Qualifier(IConfiguration.coreExceptionRegistryId)
 	private IExceptionRegistry exceptionRegistry;
 
 	@Autowired

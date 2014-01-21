@@ -12,6 +12,24 @@
     <property name="location" value="classpath:/net/meisen/general/server/settings/server.properties" />
   </bean>
   
+  <!-- add the catalogs to the exceptionsRegistry -->
+  <bean class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
+    <property name="targetObject"><ref bean="coreExceptionRegistry" /></property>
+    <property name="targetMethod" value="addExceptionCatalogsByClass" />
+    <property name="arguments">
+      <map key-type="java.lang.Class" value-type="java.lang.Class">
+        <entry key="net.meisen.general.server.api.impl.exceptions.BaseListenerException" 
+               value="net.meisen.general.genmisc.exceptions.catalog.DefaultLocalizedExceptionCatalog" />
+        <entry key="net.meisen.general.server.exceptions.ServerInitializeException" 
+               value="net.meisen.general.genmisc.exceptions.catalog.DefaultLocalizedExceptionCatalog" />
+        <entry key="net.meisen.general.server.exceptions.ServerSettingsException" 
+               value="net.meisen.general.genmisc.exceptions.catalog.DefaultLocalizedExceptionCatalog" />
+        <entry key="net.meisen.general.server.exceptions.ControlMessageException" 
+               value="net.meisen.general.genmisc.exceptions.catalog.DefaultLocalizedExceptionCatalog" /> 
+      </map>
+    </property>
+  </bean>
+  
   <!-- load some other beans into the configuration -->
   <sbc:loader id="serverBeans" selector="serverBeans.xml" />
   

@@ -4,6 +4,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import net.meisen.general.genmisc.exceptions.registry.IExceptionRegistry;
+import net.meisen.general.sbconfigurator.api.IConfiguration;
 import net.meisen.general.server.api.IListener;
 import net.meisen.general.server.api.IServerSettings;
 import net.meisen.general.server.api.IServerSettingsManager;
@@ -33,7 +34,7 @@ public class DefaultServerSettingsManager implements IServerSettingsManager {
 	private IServerSettings userSettings;
 
 	@Autowired
-	@Qualifier("exceptionRegistry")
+	@Qualifier(IConfiguration.coreExceptionRegistryId)
 	private IExceptionRegistry exceptionRegistry;
 
 	@Autowired

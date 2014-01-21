@@ -30,7 +30,7 @@ public class DefaultControlMessagesManager implements IControlMessagesManager {
 	private final Map<String, IControlMessage> controlMessages = new HashMap<String, IControlMessage>();
 
 	@Autowired
-	@Qualifier("exceptionRegistry")
+	@Qualifier(IConfiguration.coreExceptionRegistryId)
 	private IExceptionRegistry exceptionRegistry;
 
 	@Autowired

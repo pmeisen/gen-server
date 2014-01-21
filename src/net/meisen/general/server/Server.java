@@ -6,6 +6,7 @@ import java.util.List;
 
 import net.meisen.general.genmisc.exceptions.registry.IExceptionRegistry;
 import net.meisen.general.sbconfigurator.ConfigurationCoreSettings;
+import net.meisen.general.sbconfigurator.api.IConfiguration;
 import net.meisen.general.sbconfigurator.helper.SpringHelper;
 import net.meisen.general.server.api.IListener;
 import net.meisen.general.server.api.IServerSettings;
@@ -41,7 +42,7 @@ public class Server {
 	private ListenerFactory listenerFactory;
 
 	@Autowired
-	@Qualifier("exceptionRegistry")
+	@Qualifier(IConfiguration.coreExceptionRegistryId)
 	private IExceptionRegistry exceptionRegistry;
 
 	private List<IListener> listeners;
