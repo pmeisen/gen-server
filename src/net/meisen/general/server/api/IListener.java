@@ -19,11 +19,12 @@ import net.meisen.general.server.settings.pojos.Connector;
 public interface IListener {
 
 	/**
-	 * Is called when the <code>Connector</code> for the <code>Listener</code> is
-	 * available and checked.
+	 * Is called when the <code>Connector</code> for the <code>Listener</code>
+	 * is available and checked.
 	 * 
 	 * @param connector
-	 *          the <code>Connector</code> which defines the <code>Listener</code>
+	 *            the <code>Connector</code> which defines the
+	 *            <code>Listener</code>
 	 */
 	public void initialize(final Connector connector);
 
@@ -36,8 +37,9 @@ public interface IListener {
 
 	/**
 	 * Closes the <code>Listener</code>, i.e. stops the work of it. It might
-	 * happen that the close method is called several times, therefore the method
-	 * must ensure that it can be called multiple times without any problems.
+	 * happen that the close method is called several times, therefore the
+	 * method must ensure that it can be called multiple times without any
+	 * problems.
 	 */
 	public void close();
 }

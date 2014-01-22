@@ -7,9 +7,10 @@
   <bean id="controlMessagesManager" class="net.meisen.general.server.control.DefaultControlMessagesManager" />
     
   <!-- add the catalogs to the exceptionsRegistry -->
-  <bean class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
+  <bean class="net.meisen.general.sbconfigurator.factories.MethodExecutorBean">
     <property name="targetObject"><ref bean="controlMessagesManager" /></property>
     <property name="targetMethod" value="addControlMessages" />
+    <property name="type" value="init" />
     <property name="arguments">
       <list value-type="java.lang.Class">
         <value>net.meisen.general.server.control.messages.ShutdownMessage</value>

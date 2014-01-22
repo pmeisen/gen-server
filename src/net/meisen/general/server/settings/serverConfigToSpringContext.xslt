@@ -48,24 +48,16 @@
     </xsl:param>
 
     <!-- create the ServerSettings -->
-    <bean id="{$settingsBeanId}" class="net.meisen.general.server.settings.DefaultServerSettings">
+    <bean id="{$settingsBeanId}" class="net.meisen.general.server.settings.DefaultServerSettings" init-method="validate">
       <property name="defaultSettings" value="{$isDefault}" />
       <property name="failOnUnresolvableListeners" value="${server.settings.failOnUnresolvableListeners}" />
-    </bean>
-
-    <!-- let's create a bean which adds all the defined connector -->
-    <bean id="{$settingsBeanId}MethodInvoker" class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
-      <property name="targetObject">
-        <ref local="{$settingsBeanId}" />
-      </property>
-      <property name="targetMethod" value="addConnectorSettings" />
-      <property name="arguments">
+      <property name="connectorSettings">
         <list>
           <xsl:for-each select="sc:connector">
             <xsl:call-template name="beanConnectorTemplate" />
           </xsl:for-each>
         </list>
-      </property>      
+      </property>
     </bean>
   </xsl:template>
   

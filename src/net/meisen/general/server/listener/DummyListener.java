@@ -20,8 +20,8 @@ public class DummyListener implements IListener, IConnectorValidator {
 			.getLogger(DummyListener.class);
 
 	/**
-	 * The name of this <code>Listener</code> used when defined it, instead of the
-	 * class-name
+	 * The name of this <code>Listener</code> used when defined it, instead of
+	 * the class-name
 	 */
 	public static final String NAME = "DUMMY";
 

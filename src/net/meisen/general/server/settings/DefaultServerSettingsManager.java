@@ -41,12 +41,8 @@ public class DefaultServerSettingsManager implements IServerSettingsManager {
 	@Qualifier("listenerFactory")
 	private ListenerFactory listenerFactory;
 
-	// the merged settings are available after initializing the module
-	private IServerSettings mergedSettings = null;
-
 	@Override
 	public void initialize() {
-
 		if (defaultSettings == null) {
 			exceptionRegistry.throwException(ServerInitializeException.class,
 					1000);
@@ -58,18 +54,10 @@ public class DefaultServerSettingsManager implements IServerSettingsManager {
 			// validated and comes here we should just give a general message,
 			// to be sure
 		} else if (userSettings == null) {
-			// if we don't have any user-settings we use the default
-			mergedSettings = defaultSettings;
+			// nothing more to check
 		} else if (userSettings.isDefaultSettings()) {
 			exceptionRegistry.throwException(ServerInitializeException.class,
 					1002, userSettings.getClass().getName());
-		} else if (!userSettings.validate()) {
-			// nothing to do the validation can throw the exception, if it's not
-			// validated and comes here we should just give a general message,
-			// to be sure
-		} else {
-			// we have to merge the default and user-settings
-			mergedSettings = mergeSettings(defaultSettings, userSettings);
 		}
 	}
 
@@ -140,6 +128,6 @@ public class DefaultServerSettingsManager implements IServerSettingsManager {
 
 	@Override
 	public IServerSettings getServerSettings() {
-		return mergedSettings;
+		return mergeSettings(defaultSettings, userSettings);
 	}
 }

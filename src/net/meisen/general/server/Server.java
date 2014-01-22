@@ -10,6 +10,7 @@ import net.meisen.general.sbconfigurator.api.IConfiguration;
 import net.meisen.general.sbconfigurator.helper.SpringHelper;
 import net.meisen.general.server.api.IListener;
 import net.meisen.general.server.api.IServerSettings;
+import net.meisen.general.server.api.IServerSettingsManager;
 import net.meisen.general.server.exceptions.ServerInitializeException;
 import net.meisen.general.server.settings.listener.ListenerFactory;
 import net.meisen.general.server.settings.pojos.Connector;
@@ -34,8 +35,8 @@ public class Server {
 	private final static String extendedConfiguratorCoreConfig = "sbconfigurator-core.xml";
 
 	@Autowired
-	@Qualifier("finalServerSettings")
-	private IServerSettings finalServerSettings;
+	@Qualifier("serverSettingsManager")
+	private IServerSettingsManager serverSettingsManager;
 
 	@Autowired
 	@Qualifier("listenerFactory")
@@ -88,7 +89,8 @@ public class Server {
 	 * other <code>serverThread</code> is specified.
 	 */
 	public void start() {
-
+		final IServerSettings finalServerSettings = getServerSettings();
+		
 		// check some pre-conditions
 		if (exceptionRegistry == null) {
 			throw new ServerInitializeException(
@@ -238,7 +240,7 @@ public class Server {
 	 * @return the <code>ServerSettings</code> used by <code>this</code>
 	 */
 	public IServerSettings getServerSettings() {
-		return finalServerSettings;
+		return serverSettingsManager.getServerSettings();
 	}
 
 	/**

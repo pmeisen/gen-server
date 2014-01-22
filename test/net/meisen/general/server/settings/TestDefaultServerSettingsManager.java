@@ -196,6 +196,9 @@ public class TestDefaultServerSettingsManager {
 		final IServerSettings settings = TestHelper
 				.getSettings("sbconfigurator-core-useSystemProperties.xml");
 
+		System.setProperty("server.settings.failOnUnresolvableListeners",
+				"true");
+
 		// check if the created connectors
 		assertEquals(2, settings.getConnectorSettings().size());
 		final Connector firstConnector = Collections.get(0,

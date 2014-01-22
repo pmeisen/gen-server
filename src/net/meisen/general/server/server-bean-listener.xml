@@ -11,9 +11,12 @@
   </bean>
   
   <!-- add the named listeners to the listenerFactory -->
-  <bean class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
+  <bean class="net.meisen.general.sbconfigurator.factories.MethodExecutorBean">
     <property name="targetObject"><ref bean="listenerFactory" /></property>
     <property name="targetMethod" value="registerNamedListeners" />
+    
+    <property name="type" value="factory" />
+    
     <property name="arguments">
       <map key-type="java.lang.String" value-type="java.lang.Class">
         <entry>

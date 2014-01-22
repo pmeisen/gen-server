@@ -27,7 +27,11 @@ public class ListenerFactory {
 	private final static Logger LOG = LoggerFactory
 			.getLogger(ListenerFactory.class);
 
-	private Map<String, Class<? extends IListener>> listeners = new HashMap<String, Class<? extends IListener>>();
+	private final Map<String, Class<? extends IListener>> listeners = new HashMap<String, Class<? extends IListener>>();
+
+	/**
+	 * Defines a defaultListener to be used if none is defined
+	 */
 	private String defaultListener;
 
 	@Autowired

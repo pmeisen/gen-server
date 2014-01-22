@@ -4,11 +4,16 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
 
   <!-- get the general settings -->
-  <bean id="serverSettingsManager" class="net.meisen.general.server.settings.DefaultServerSettingsManager" init-method="initialize" />
+  <bean id="serverSettingsManager" class="net.meisen.general.server.settings.DefaultServerSettingsManager" />
   
-  <!-- get the settings used to start the server -->
-  <bean id="finalServerSettings" factory-bean="serverSettingsManager" factory-method="getServerSettings" class="net.meisen.general.server.api.IServerSettings"  />
-  
+  <!-- execute the initialization of the serverSettingsManager -->
+  <bean class="net.meisen.general.sbconfigurator.factories.MethodExecutorBean">
+    <property name="targetMethod" value="initialize" />
+    <property name="targetObject"><ref bean="serverSettingsManager" /></property>
+    
+    <property name="type" value="init" />
+  </bean>
+    
   <!-- the parser used to parse values of extensions -->
   <bean id="serverStringParser" class="net.meisen.general.sbconfigurator.helper.StringParser">
     <constructor-arg value="${server.settings.defaultDateFormat}" />

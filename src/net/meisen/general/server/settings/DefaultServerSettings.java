@@ -52,7 +52,7 @@ public class DefaultServerSettings implements IServerSettings {
 	 * <code>ServerSettings</code>.
 	 * 
 	 * @param connectorSetting
-	 *          the <code>Connector</code> to be added
+	 *            the <code>Connector</code> to be added
 	 */
 	public void addConnectorSetting(final Connector connectorSetting) {
 		connectorSettings.add(connectorSetting);
@@ -63,11 +63,24 @@ public class DefaultServerSettings implements IServerSettings {
 	 * <code>this</code>.
 	 * 
 	 * @param connectorSettings
-	 *          the <code>Collection</code> of <code>Connector</code> instances to
-	 *          be added
+	 *            the <code>Collection</code> of <code>Connector</code>
+	 *            instances to be added
 	 */
-	public void addConnectorSettings(final Collection<Connector> connectorSettings) {
+	public void addConnectorSettings(
+			final Collection<Connector> connectorSettings) {
 		this.connectorSettings.addAll(connectorSettings);
+	}
+
+	/**
+	 * Reset all other {@code connectorSettings} by the specified once.
+	 * 
+	 * @param connectorSettings
+	 *            the {@code connectorSettings} to be used
+	 */
+	public void setConnectorSettings(
+			final Collection<Connector> connectorSettings) {
+		this.connectorSettings.clear();
+		addConnectorSettings(connectorSettings);
 	}
 
 	@Override
@@ -78,11 +91,12 @@ public class DefaultServerSettings implements IServerSettings {
 	/**
 	 * Defines if the instance represents the default settings of the server.
 	 * There should be only one instance which is default, otherwise the
-	 * <code>ServerSettingsManager</code> is unable to merge the defined settings.
+	 * <code>ServerSettingsManager</code> is unable to merge the defined
+	 * settings.
 	 * 
 	 * @param defaultSettings
-	 *          <code>true</code> if <code>this</code> represents the default
-	 *          settings, otherwise <code>false</code>
+	 *            <code>true</code> if <code>this</code> represents the default
+	 *            settings, otherwise <code>false</code>
 	 * 
 	 * @see IServerSettingsManager
 	 */
@@ -102,22 +116,26 @@ public class DefaultServerSettings implements IServerSettings {
 		// check each connector
 		for (final Connector connector : connectorSettings) {
 			if (!usedPorts.add(connector.getPort())) {
-				exceptionRegistry.throwException(ServerSettingsException.class, 1000,
-						connector.getPort(), (defaultSettings ? "default-" : ""));
+				exceptionRegistry.throwException(ServerSettingsException.class,
+						1000, connector.getPort(),
+						(defaultSettings ? "default-" : ""));
 			}
 
 			// get the listener
 			final IListener listener = listenerFactory.createListener(connector
 					.getListener());
 			if (listener == null) {
+				System.out.println("WOULD FAIL");
 				if (isFailOnUnresolvableListeners()) {
-					exceptionRegistry.throwException(ServerSettingsException.class, 1002,
+					exceptionRegistry.throwException(
+							ServerSettingsException.class, 1002,
 							connector.getListener(), connector.toString());
 				} else {
 					if (LOG.isInfoEnabled()) {
 						LOG.info("The connector '" + connector.toString()
 								+ "' was disabled, because the listener '"
-								+ connector.getListener() + "' cannot be created.");
+								+ connector.getListener()
+								+ "' cannot be created.");
 					}
 
 					connector.setEnable(false);
@@ -125,10 +143,12 @@ public class DefaultServerSettings implements IServerSettings {
 			} else if (listener instanceof IConnectorValidator) {
 				final IConnectorValidator validator = (IConnectorValidator) listener;
 
-				// validate it, it can throw it's own exception but if not we should
+				// validate it, it can throw it's own exception but if not we
+				// should
 				// have one as well
 				if (!validator.validate(connector)) {
-					exceptionRegistry.throwException(ServerSettingsException.class, 1001,
+					exceptionRegistry.throwException(
+							ServerSettingsException.class, 1001,
 							connector.toString());
 				}
 			}
@@ -138,8 +158,8 @@ public class DefaultServerSettings implements IServerSettings {
 	}
 
 	/**
-	 * Checks if the validation of <code>this</code> fails if the defined listener
-	 * cannot be resolved.
+	 * Checks if the validation of <code>this</code> fails if the defined
+	 * listener cannot be resolved.
 	 * 
 	 * @return <code>true</code> if the validation fails, otherwise
 	 *         <code>false</code>
@@ -156,13 +176,14 @@ public class DefaultServerSettings implements IServerSettings {
 	 * listener cannot be resolved.
 	 * 
 	 * @param failOnUnresolvableListeners
-	 *          <code>true</code> if the validation should fail, otherwise
-	 *          <code>false</code>
+	 *            <code>true</code> if the validation should fail, otherwise
+	 *            <code>false</code>
 	 * 
 	 * @see #validate()
 	 * @see ListenerFactory#resolve(String)
 	 */
-	public void setFailOnUnresolvableListeners(boolean failOnUnresolvableListeners) {
+	public void setFailOnUnresolvableListeners(
+			boolean failOnUnresolvableListeners) {
 		this.failOnUnresolvableListeners = failOnUnresolvableListeners;
 	}
 }
