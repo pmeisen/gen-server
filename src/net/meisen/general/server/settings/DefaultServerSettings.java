@@ -125,7 +125,6 @@ public class DefaultServerSettings implements IServerSettings {
 			final IListener listener = listenerFactory.createListener(connector
 					.getListener());
 			if (listener == null) {
-				System.out.println("WOULD FAIL");
 				if (isFailOnUnresolvableListeners()) {
 					exceptionRegistry.throwException(
 							ServerSettingsException.class, 1002,

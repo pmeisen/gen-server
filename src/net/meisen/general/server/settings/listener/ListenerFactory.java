@@ -39,14 +39,14 @@ public class ListenerFactory {
 	private IConfiguration configuration;
 
 	/**
-	 * Registers a <code>listenerClazz</code> with an alias, i.e. a name which can
-	 * be used instead of the name to create an instance of the
+	 * Registers a <code>listenerClazz</code> with an alias, i.e. a name which
+	 * can be used instead of the name to create an instance of the
 	 * <code>Listener</code>.
 	 * 
 	 * @param name
-	 *          the name to be the alias for the <code>listenerClazz</code>
+	 *            the name to be the alias for the <code>listenerClazz</code>
 	 * @param listenerClazz
-	 *          the class to be associated to the specified <code>name</code>
+	 *            the class to be associated to the specified <code>name</code>
 	 */
 	public void registerNamedListener(final String name,
 			final Class<? extends IListener> listenerClazz) {
@@ -58,7 +58,13 @@ public class ListenerFactory {
 			if (LOG.isWarnEnabled()) {
 				LOG.warn("The listener '" + name
 						+ "' was defined multiple times. The implementation '"
-						+ listenerClazz + "' overrides the '" + oldListener + "'");
+						+ listenerClazz + "' overrides the '" + oldListener
+						+ "'");
+			}
+		} else {
+			if (LOG.isDebugEnabled()) {
+				LOG.debug("Registering listener '" + name + "' with '"
+						+ listenerClazz + "'.");
 			}
 		}
 	}
@@ -68,7 +74,7 @@ public class ListenerFactory {
 	 * specified name (i.e. the key of the passed map).
 	 * 
 	 * @param listeners
-	 *          the <code>Listener</code> instances to be registered
+	 *            the <code>Listener</code> instances to be registered
 	 */
 	public void registerNamedListeners(
 			final Map<String, Class<? extends IListener>> listeners) {
@@ -82,8 +88,9 @@ public class ListenerFactory {
 	}
 
 	/**
-	 * Gets the default <code>Listener</code>, i.e. the one used when the name or
-	 * class of the <code>Listener</code> to be resolved is <code>null</code>.
+	 * Gets the default <code>Listener</code>, i.e. the one used when the name
+	 * or class of the <code>Listener</code> to be resolved is <code>null</code>
+	 * .
 	 * 
 	 * @return the default <code>Listener</code> to be used if none is specified
 	 * 
@@ -97,19 +104,20 @@ public class ListenerFactory {
 	 * Sets the default <code>Listener</code>.
 	 * 
 	 * @param defaultListener
-	 *          the default <code>Listener</code> to be used
+	 *            the default <code>Listener</code> to be used
 	 */
 	public void setDefaultListener(final String defaultListener) {
 		this.defaultListener = defaultListener;
 	}
 
 	/**
-	 * Resolves the passed <code>Listener</code> to the correct <code>Class</code>
-	 * , i.e. the implementation to be used to create the <code>Listener</code>
-	 * instance.
+	 * Resolves the passed <code>Listener</code> to the correct
+	 * <code>Class</code> , i.e. the implementation to be used to create the
+	 * <code>Listener</code> instance.
 	 * 
 	 * @param listener
-	 *          the name or the class (as string) of the listener to be resolved
+	 *            the name or the class (as string) of the listener to be
+	 *            resolved
 	 * 
 	 * @return the <code>Class</code> of the <code>Listener</code> specified by
 	 *         the passed <code>listener</code>
@@ -123,7 +131,7 @@ public class ListenerFactory {
 			throw new IllegalStateException(
 					"Please specify a defaultListener for the ListenerFactory '"
 							+ getClass().getName() + "'.");
-		} else if (listeners.containsKey(listener)) {
+		} else if (listeners.containsKey(listener.toUpperCase())) {
 			return listeners.get(listener.toUpperCase());
 		} else {
 			final Class<?> clazz = Classes.getClass(listener);
@@ -141,13 +149,13 @@ public class ListenerFactory {
 	}
 
 	/**
-	 * Creates the instance of the <code>Listener</code> which is specified by the
-	 * name or the it's class. The created instance will be wired, i.e. annotation
-	 * based wiring is performed.
+	 * Creates the instance of the <code>Listener</code> which is specified by
+	 * the name or the it's class. The created instance will be wired, i.e.
+	 * annotation based wiring is performed.
 	 * 
 	 * @param listener
-	 *          the name or the class of the <code>Listener</code> instance to be
-	 *          created
+	 *            the name or the class of the <code>Listener</code> instance to
+	 *            be created
 	 * 
 	 * @return the created and wired instance
 	 */
@@ -156,16 +164,17 @@ public class ListenerFactory {
 	}
 
 	/**
-	 * Creates the instance of the <code>Listener</code> which is specified by the
-	 * <code>listenerClazz</code>. The created instance will be wired, i.e.
+	 * Creates the instance of the <code>Listener</code> which is specified by
+	 * the <code>listenerClazz</code>. The created instance will be wired, i.e.
 	 * annotation based wiring is performed.
 	 * 
 	 * @param listenerClazz
-	 *          the class of the <code>Listener</code> instance to be created
+	 *            the class of the <code>Listener</code> instance to be created
 	 * 
 	 * @return the created and wired instance
 	 */
-	public IListener createListener(final Class<? extends IListener> listenerClazz) {
+	public IListener createListener(
+			final Class<? extends IListener> listenerClazz) {
 		if (listenerClazz == null) {
 			return null;
 		} else {
