@@ -34,7 +34,7 @@ public class Server {
 
 	private final static String extendedConfiguratorCoreConfig = "sbconfigurator-core.xml";
 
-	@Autowired
+	@Autowired 
 	@Qualifier("serverSettingsManager")
 	private IServerSettingsManager serverSettingsManager;
 
