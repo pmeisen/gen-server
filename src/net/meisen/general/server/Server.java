@@ -34,7 +34,7 @@ public class Server {
 
 	private final static String extendedConfiguratorCoreConfig = "sbconfigurator-core.xml";
 
-	@Autowired 
+	@Autowired
 	@Qualifier("serverSettingsManager")
 	private IServerSettingsManager serverSettingsManager;
 
@@ -90,7 +90,7 @@ public class Server {
 	 */
 	public void start() {
 		final IServerSettings finalServerSettings = getServerSettings();
-		
+
 		// check some pre-conditions
 		if (exceptionRegistry == null) {
 			throw new ServerInitializeException(
