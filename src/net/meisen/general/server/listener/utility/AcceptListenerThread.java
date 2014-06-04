@@ -24,7 +24,7 @@ public abstract class AcceptListenerThread extends Thread {
 	private final ServerSocket serverSocket;
 
 	/**
-	 * Default constructor which specifies the <code>port</code> to retrieve the
+	 * Constructor which specifies the <code>port</code> to retrieve the
 	 * incoming connections from.
 	 * 
 	 * @param port
@@ -34,7 +34,28 @@ public abstract class AcceptListenerThread extends Thread {
 	 *             if the <code>Socket</code> cannot be created
 	 */
 	public AcceptListenerThread(final int port) throws IOException {
+		this(port, 0);
+	}
+
+	/**
+	 * Constructor which specifies the <code>port</code> to retrieve the
+	 * incoming connections from and the timeout, i.e. if no accepting is
+	 * retrieved, the socket will close.
+	 * 
+	 * @param port
+	 *            the port to retrieve the incoming connection from
+	 * @param timeout
+	 *            the timeout after which the socket should be closed, i.e. if
+	 *            no accept was called within this time; a value of {@code 0}
+	 *            means no timeout
+	 * 
+	 * @throws IOException
+	 *             if the <code>Socket</code> cannot be created
+	 */
+	public AcceptListenerThread(final int port, final int timeout)
+			throws IOException {
 		serverSocket = new ServerSocket(port);
+		serverSocket.setSoTimeout(timeout);
 	}
 
 	/**
@@ -64,7 +85,7 @@ public abstract class AcceptListenerThread extends Thread {
 			try {
 				// listen to the socket
 				final Socket socket = serverSocket.accept();
-				
+
 				// log the incoming connection
 				if (LOG.isDebugEnabled()) {
 					LOG.debug("Incoming connection from "
@@ -110,7 +131,7 @@ public abstract class AcceptListenerThread extends Thread {
 	 * 
 	 * @return a new <code>Thread</code> which hanldes the data retrieved on the
 	 *         specified <code>Socket</code>
-	 *         
+	 * 
 	 * @throws IOException
 	 *             if the <code>Socket</code> cannot be bind or used
 	 * 
