@@ -27,7 +27,7 @@ public class ControlListener extends BaseListener {
 	private IControlMessagesManager controlMessagesManager;
 
 	@Override
-	protected Thread createWorkerThread(Socket socket) {
+	protected Thread createWorkerThread(final Socket socket) {
 		return new HandleCommandsThread(socket, controlMessagesManager);
 	}
 
