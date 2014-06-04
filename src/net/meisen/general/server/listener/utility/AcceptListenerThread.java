@@ -64,7 +64,7 @@ public abstract class AcceptListenerThread extends Thread {
 			try {
 				// listen to the socket
 				final Socket socket = serverSocket.accept();
-
+				
 				// log the incoming connection
 				if (LOG.isDebugEnabled()) {
 					LOG.debug("Incoming connection from "

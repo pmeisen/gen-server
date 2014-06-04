@@ -7,7 +7,7 @@ import java.net.Socket;
 
 import net.meisen.general.server.api.IControlMessage;
 import net.meisen.general.server.api.IControlMessagesManager;
-import net.meisen.general.server.listener.utility.WorkerThread;
+import net.meisen.general.server.listener.utility.StringWorkerThread;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,7 +18,7 @@ import org.slf4j.LoggerFactory;
  * @author pmeisen
  * 
  */
-public class HandleCommandsThread extends WorkerThread {
+public class HandleCommandsThread extends StringWorkerThread {
 	private final static Logger LOG = LoggerFactory
 			.getLogger(HandleCommandsThread.class);
 
@@ -29,10 +29,10 @@ public class HandleCommandsThread extends WorkerThread {
 	 * within <code>this</code> instance.
 	 * 
 	 * @param input
-	 *          the <code>Socket</code> to handle the data from within
-	 *          <code>this</code> instance
+	 *            the <code>Socket</code> to handle the data from within
+	 *            <code>this</code> instance
 	 * @param controlMessagesManager
-	 *          the <code>ControlMessagesManager</code> to be used
+	 *            the <code>ControlMessagesManager</code> to be used
 	 */
 	public HandleCommandsThread(final Socket input,
 			final IControlMessagesManager controlMessagesManager) {
@@ -65,14 +65,16 @@ public class HandleCommandsThread extends WorkerThread {
 							LOG.trace("Received a NULL message.");
 						}
 
-						answerMsg = controlMessagesManager.determineMessage("NLRCVD");
+						answerMsg = controlMessagesManager
+								.determineMessage("NLRCVD");
 					} else {
 						final IControlMessage rcvMsg = controlMessagesManager
 								.determineMessage(msg);
 
 						if (LOG.isDebugEnabled()) {
 							LOG.debug("Received message '" + msg
-									+ "', which was translated to '" + rcvMsg + "'");
+									+ "', which was translated to '" + rcvMsg
+									+ "'");
 						}
 
 						// execute the message
@@ -80,16 +82,18 @@ public class HandleCommandsThread extends WorkerThread {
 							try {
 								rcvMsg.execute();
 							} catch (final Exception e) {
-								// we cannot allow that the execution kills anything
+								// we cannot allow that the execution kills
+								// anything
 								if (LOG.isErrorEnabled()) {
-									LOG.error(
-											"Execution of ControlMessage '" + msg + "' failed.", e);
+									LOG.error("Execution of ControlMessage '"
+											+ msg + "' failed.", e);
 								}
 							}
 						}
 
 						// send the message that data was retrieved
-						answerMsg = controlMessagesManager.determineMessage("RCVD");
+						answerMsg = controlMessagesManager
+								.determineMessage("RCVD");
 					}
 
 					// write the answer
@@ -99,6 +103,8 @@ public class HandleCommandsThread extends WorkerThread {
 				if (LOG.isWarnEnabled()) {
 					LOG.warn("Read on socket interrupted.", e);
 				}
+			} finally {
+				close();
 			}
 		}
 

@@ -11,6 +11,7 @@ import net.meisen.general.sbconfigurator.api.IConfiguration;
 import net.meisen.general.server.api.IListener;
 import net.meisen.general.server.api.impl.exceptions.BaseListenerException;
 import net.meisen.general.server.listener.utility.AcceptListenerThread;
+import net.meisen.general.server.listener.utility.StringWorkerThread;
 import net.meisen.general.server.listener.utility.WorkerThread;
 import net.meisen.general.server.settings.pojos.Connector;
 
@@ -119,11 +120,10 @@ public abstract class BaseListener implements IListener {
 	 *         <code>Socket</code> when started
 	 */
 	protected Thread createWorkerThread(final Socket socket) {
-		return new WorkerThread(socket) {
+		return new StringWorkerThread(socket) {
 
 			@Override
 			public void run() {
-
 				try {
 					final BufferedReader in = createSocketReader();
 					final PrintWriter out = createSocketWriter();
@@ -143,6 +143,8 @@ public abstract class BaseListener implements IListener {
 				} catch (final IOException e) {
 					getExceptionRegistry().throwException(
 							BaseListenerException.class, 1004, e, getPort());
+				} finally {
+					close();
 				}
 			}
 		};
