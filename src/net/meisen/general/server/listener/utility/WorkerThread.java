@@ -1,9 +1,8 @@
 package net.meisen.general.server.listener.utility;
 
+import java.io.Closeable;
 import java.io.IOException;
 import java.net.Socket;
-
-import com.sun.xml.internal.ws.Closeable;
 
 /**
  * Helper class which can be used to handle the requested retrieved on a
