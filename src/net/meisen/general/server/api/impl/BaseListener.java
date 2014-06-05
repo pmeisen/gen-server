@@ -46,7 +46,7 @@ public abstract class BaseListener implements IListener {
 		final int specPort = c.getPort();
 		if (getExceptionRegistry() == null) {
 			throw new NullPointerException(
-					"The exceptionRegitry cannot be null.");
+					"The exceptionRegistry cannot be null.");
 		} else if (specPort < 1 || specPort > 65535) {
 			getExceptionRegistry().throwException(BaseListenerException.class,
 					1000, specPort);
