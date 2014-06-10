@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.BindException;
 import java.net.Socket;
+import java.net.SocketException;
 
 import net.meisen.general.genmisc.exceptions.registry.IExceptionRegistry;
 import net.meisen.general.sbconfigurator.api.IConfiguration;
@@ -30,7 +31,8 @@ import org.springframework.beans.factory.annotation.Qualifier;
  * 
  */
 public abstract class BaseListener implements IListener {
-	private final Logger LOG = LoggerFactory.getLogger(this.getClass());
+	private final static Logger LOG = LoggerFactory
+			.getLogger(BaseListener.class);
 
 	@Autowired(required = false)
 	@Qualifier(IConfiguration.coreExceptionRegistryId)
@@ -139,6 +141,11 @@ public abstract class BaseListener implements IListener {
 						} else {
 							out.println(output);
 						}
+					}
+				} catch (final SocketException e) {
+					// generally ignore the socket is just closed
+					if (LOG.isTraceEnabled()) {
+						LOG.trace("Caught SocketException and ignored it.", e);
 					}
 				} catch (final IOException e) {
 					getExceptionRegistry().throwException(

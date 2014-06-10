@@ -11,7 +11,7 @@
   <bean class="net.meisen.general.sbconfigurator.config.placeholder.SpringPropertyHolder">
     <property name="location" value="classpath:/net/meisen/general/server/settings/server.properties" />
   </bean>
-  
+   
   <!-- add the catalogs to the exceptionsRegistry -->
   <bean class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
     <property name="targetObject"><ref bean="coreExceptionRegistry" /></property>

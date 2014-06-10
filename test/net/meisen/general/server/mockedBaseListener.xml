@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<server xmlns="http://dev.meisen.net/server/config" 
+		xmlns:e="http://dev.meisen.net/server/config/extension"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://dev.meisen.net/server/config http://dev.meisen.net/xsd/server/serverConfig.xsd
+                            http://dev.meisen.net/server/config/extension http://dev.meisen.net/xsd/server/serverConfigExtension.xsd">
+
+  <!-- add the lightweight HTTP protocol -->
+  <connector id="MockListener" port="6061" listener="net.meisen.general.server.listener.mock.MockBaseListener" />
+
+  <!-- disable the default connector -->
+  <connector id="DEFAULT" port="${server.settings.defaultPort}" listener="${server.settings.defaultListener}" enable="false" />
+</server>

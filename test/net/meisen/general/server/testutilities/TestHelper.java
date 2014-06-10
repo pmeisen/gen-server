@@ -25,7 +25,7 @@ public class TestHelper {
 	 * <code>extension</code>.
 	 * 
 	 * @param extension
-	 *          the spring configuration to be loaded
+	 *            the spring configuration to be loaded
 	 * 
 	 * @return the <code>Server</code> instance created by the specified
 	 *         <code>extension</code>
@@ -39,10 +39,10 @@ public class TestHelper {
 	 * <code>extension</code>.
 	 * 
 	 * @param extension
-	 *          the spring configuration to be loaded
+	 *            the spring configuration to be loaded
 	 * 
-	 * @return the <code>IServerSettings</code> instance created by the specified
-	 *         <code>extension</code>
+	 * @return the <code>IServerSettings</code> instance created by the
+	 *         specified <code>extension</code>
 	 */
 	public static IServerSettings getSettings(final String extension) {
 		final Server server = getServer(extension);
@@ -54,33 +54,24 @@ public class TestHelper {
 	 * specified <code>port</code>.
 	 * 
 	 * @param msg
-	 *          the message to be send
+	 *            the message to be send
 	 * @param host
-	 *          the host to send to
+	 *            the host to send to
 	 * @param port
-	 *          the port to send to
+	 *            the port to send to
 	 * 
 	 * @return the answer received on the <code>Socket</code>
 	 */
 	public static String sendMessage(final String msg, final String host,
 			final int port) {
-
 		try {
 			final Socket socket = new Socket(host, port);
-			final PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
-			final BufferedReader in = new BufferedReader(new InputStreamReader(
-					socket.getInputStream()));
-
-			// send the message
-			out.println(msg);
-
-			// get the answer - right now we don't care
-			final String answer = in.readLine();
+			final String rcv = sendMessage(msg, socket);
 
 			// close the Socket
 			socket.close();
 
-			return answer;
+			return rcv;
 		} catch (final UnknownHostException e) {
 			fail(e.getMessage());
 		} catch (final IOException e) {
@@ -89,5 +80,36 @@ public class TestHelper {
 
 		fail("Reached something unreachable...");
 		return null;
+	}
+
+	/**
+	 * Helper method to send a message to the specified <code>host</code> on the
+	 * specified <code>port</code>.
+	 * 
+	 * @param msg
+	 *            the message to be send
+	 * @param socket
+	 *            the socket to send to
+	 * 
+	 * @return the answer received on the <code>Socket</code>
+	 * 
+	 * @throws IOException
+	 *             if the data cannot be send
+	 */
+	public static String sendMessage(final String msg, final Socket socket)
+			throws IOException {
+
+		final PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
+		final BufferedReader in = new BufferedReader(new InputStreamReader(
+				socket.getInputStream()));
+
+		// send the message
+		out.println(msg);
+
+		// get the answer - right now we don't care
+		final String answer = in.readLine();
+
+		return answer;
+
 	}
 }

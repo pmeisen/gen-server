@@ -75,12 +75,13 @@ public abstract class StringWorkerThread extends WorkerThread {
 
 	@Override
 	public void close() {
+		super.close();
+		
 		if (reader != null) {
 			Streams.closeIO(reader);
 		}
 		if (writer != null) {
 			Streams.closeIO(writer);
 		}
-		super.close();
 	}
 }

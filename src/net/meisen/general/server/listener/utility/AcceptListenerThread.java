@@ -5,6 +5,11 @@ import java.io.InterruptedIOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketException;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,6 +27,8 @@ public abstract class AcceptListenerThread extends Thread {
 			.getLogger(AcceptListenerThread.class);
 
 	private final ServerSocket serverSocket;
+	private final ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
+	private final Set<Thread> workingThreads = new HashSet<Thread>();
 
 	/**
 	 * Constructor which specifies the <code>port</code> to retrieve the
@@ -94,6 +101,11 @@ public abstract class AcceptListenerThread extends Thread {
 
 				// start the thread to handle the connection
 				final Thread t = createWorkerThread(socket);
+
+				// add the thread
+				cleanUpAndAdd(t);
+
+				// start the thread
 				t.setDaemon(true);
 				t.start();
 
@@ -119,6 +131,41 @@ public abstract class AcceptListenerThread extends Thread {
 
 			// make sure the socket is closed
 			close();
+		}
+	}
+
+	/**
+	 * Cleans up the currently running threads and adds the one specified
+	 * 
+	 * @param newThread
+	 *            the thread to be added, can be {@code null} if just a cleanup
+	 *            should be performed
+	 */
+	protected void cleanUpAndAdd(final Thread newThread) {
+
+		lock.readLock().lock();
+		final List<Thread> toBeRemoved;
+		try {
+			toBeRemoved = new ArrayList<Thread>();
+			for (final Thread t : workingThreads) {
+				if (!t.isAlive() || t.isInterrupted()) {
+					toBeRemoved.add(t);
+				}
+			}
+		} finally {
+			lock.readLock().unlock();
+		}
+
+		// remove the finished once and add the new one
+		lock.writeLock().lock();
+		try {
+			workingThreads.removeAll(toBeRemoved);
+
+			if (newThread != null) {
+				workingThreads.add(newThread);
+			}
+		} finally {
+			lock.writeLock().unlock();
 		}
 	}
 
@@ -156,9 +203,22 @@ public abstract class AcceptListenerThread extends Thread {
 		final ServerSocket serverSocket = getServerSocket();
 
 		synchronized (serverSocket) {
-
 			// close the connection
 			if (!serverSocket.isClosed()) {
+				lock.writeLock().lock();
+				try {
+					for (final Thread t : workingThreads) {
+						t.interrupt();
+
+						// close the instance if it's a WorkerThread
+						if (t instanceof WorkerThread) {
+							 ((WorkerThread) t).close();
+						}
+					}
+				} finally {
+					lock.writeLock().unlock();
+				}
+
 				try {
 					serverSocket.close();
 				} catch (final IOException e) {

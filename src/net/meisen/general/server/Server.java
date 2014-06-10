@@ -49,6 +49,8 @@ public class Server {
 	private List<IListener> listeners;
 
 	private Thread serverThread;
+	
+	private boolean started = false;
 
 	/**
 	 * Hide the default constructor, please use {@link Server#createServer()} to
@@ -166,6 +168,10 @@ public class Server {
 			// keep the opened listeners
 			this.listeners = Collections.synchronizedList(listeners);
 
+			// set the started flag
+			this.started = true;
+			
+			// let's wait for the thread
 			try {
 				serverThread.wait();
 			} catch (final InterruptedException e) {
@@ -182,7 +188,7 @@ public class Server {
 	 * @return <code>true</code> if it's running, otherwise <code>false</code>
 	 */
 	public boolean isRunning() {
-		return serverThread != null;
+		return this.started;
 	}
 
 	/**
