@@ -203,52 +203,57 @@ public abstract class AcceptListenerThread extends Thread {
 		final ServerSocket serverSocket = getServerSocket();
 
 		synchronized (serverSocket) {
-			// close the connection
-			if (!serverSocket.isClosed()) {
-				lock.writeLock().lock();
-				try {
-					for (final Thread t : workingThreads) {
-						t.interrupt();
 
-						// close the instance if it's a WorkerThread
-						if (t instanceof WorkerThread) {
-							((WorkerThread) t).close();
-						}
+			lock.writeLock().lock();
+			try {
+				for (final Thread t : workingThreads) {
+					t.interrupt();
+
+					// close the instance if it's a WorkerThread
+					if (t instanceof WorkerThread) {
+						((WorkerThread) t).close();
 					}
-
-					for (final Thread t : workingThreads) {
-
-						// check if the thread is still alive
-						if (t.isAlive()) {
-							try {
-								t.join(500);
-							} catch (final InterruptedException e) {
-								// do nothing
-							}
-						} else {
-							continue;
-						}
-
-						// check if it's still alive
-						if (t.isAlive()) {
-							if (LOG.isErrorEnabled()) {
-								LOG.error("The thread working-thread '"
-										+ t.getName()
-										+ "' is still running, even after flagged interrupted and closed (only if WorkingThread). This might lead to a memory-leak.");
-							}
-						}
-					}
-				} finally {
-					lock.writeLock().unlock();
 				}
 
-				try {
-					serverSocket.close();
-				} catch (final IOException e) {
-					// ignore it
+				// validate the threads
+				for (final Thread t : workingThreads) {
+
+					// check if the thread is still alive
+					if (t.isAlive()) {
+						try {
+							t.join(500);
+						} catch (final InterruptedException e) {
+							// do nothing
+						}
+					} else {
+						continue;
+					}
+
+					// check if it's still alive
+					if (t.isAlive()) {
+						if (LOG.isErrorEnabled()) {
+							LOG.error("The thread working-thread '"
+									+ t.getName()
+									+ "' is still running, even after flagged interrupted and closed (only if WorkingThread). This might lead to a memory-leak.");
+						}
+					}
 				}
 
+				// remove all threads
+				workingThreads.clear();
+
+				// close the socket while write-lock is enabled
+				if (!serverSocket.isClosed()) {
+					try {
+						serverSocket.close();
+					} catch (final IOException e) {
+						// ignore it
+					}
+				}
+			} finally {
+				lock.writeLock().unlock();
 			}
+
 		}
 	}
 
