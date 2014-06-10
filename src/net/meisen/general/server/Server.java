@@ -197,7 +197,7 @@ public class Server {
 	 */
 	public void shutdown() {
 
-		if (serverThread == null) {
+		if (!this.started) {
 			return;
 		} else if (listeners == null) {
 			// do nothing
@@ -213,8 +213,7 @@ public class Server {
 					}
 
 					// if a listener cannot shutdown we still should try to
-					// shutdown the
-					// others correctly
+					// shutdown the others correctly
 					try {
 						listener.close();
 					} catch (final RuntimeException e) {
@@ -237,6 +236,7 @@ public class Server {
 
 		// release thread
 		serverThread = null;
+		this.started = false;
 	}
 
 	/**
