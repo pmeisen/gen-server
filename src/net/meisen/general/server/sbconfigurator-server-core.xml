@@ -26,10 +26,4 @@
       </map>
     </property>
   </bean>
-    
-  <!-- we define a loader for the default settings, which are always loaded -->
-  <sbc:loader id="serverDefaultConfigurationLoader" validationEnabled="true" beanOverridingAllowed="false" 
-              selector="net/meisen/general/server/settings/defaultServerSettings.xml" 
-  		      loadFromClassPath="true" loadFromWorkingDir="false"
-              xslt="net/meisen/general/server/settings/serverConfigToSpringContext.xslt" />
 </beans>

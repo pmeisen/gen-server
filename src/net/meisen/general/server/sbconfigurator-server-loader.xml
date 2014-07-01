@@ -4,11 +4,16 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
        					   http://dev.meisen.net/sbconfigurator/ns http://dev.meisen.net/xsd/sbconfigurator/sbconfigurator-ns.xsd">
 
-  <!-- define a loader to load additional server settings -->
-  <sbc:loader id="serverConfigurationLoader" validationEnabled="true" beanOverridingAllowed="false" loadFromClassPath="true" loadFromWorkingDir="false"
-              selector="${server.settings.selector}" 
+  <!-- we define a loader for the default settings, which is always loaded -->
+  <sbc:loader id="serverDefaultConfigurationLoader" validationEnabled="true" beanOverridingAllowed="false" 
+              selector="net/meisen/general/server/settings/defaultServerSettings.xml" 
+  		      loadFromClassPath="true" loadFromWorkingDir="false"
               xslt="net/meisen/general/server/settings/serverConfigToSpringContext.xslt" />
 
-  <!-- load some other beans into the configuration -->
+  <!-- define a loader to load additional user settings -->
+  <sbc:loader id="serverConfigurationLoader" validationEnabled="true" beanOverridingAllowed="false" loadFromClassPath="true" loadFromWorkingDir="false"
+              selector="${server.settings.selector}" xslt="net/meisen/general/server/settings/serverConfigToSpringContext.xslt" />
+
+  <!-- we define a loader for all the beans needed by the server, but not the server itself -->
   <sbc:loader id="serverBeans" selector="serverBeans.xml" />
 </beans>
