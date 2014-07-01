@@ -32,9 +32,4 @@
               selector="net/meisen/general/server/settings/defaultServerSettings.xml" 
   		      loadFromClassPath="true" loadFromWorkingDir="false"
               xslt="net/meisen/general/server/settings/serverConfigToSpringContext.xslt" />
-
-  <!-- now use the same loader to load another configuration instance, which can overload the default -->
-  <sbc:loader id="serverConfigurationLoader" validationEnabled="true" beanOverridingAllowed="false" loadFromClassPath="true" loadFromWorkingDir="false"
-              selector="${server.settings.selector}" 
-              xslt="net/meisen/general/server/settings/serverConfigToSpringContext.xslt" />
 </beans>

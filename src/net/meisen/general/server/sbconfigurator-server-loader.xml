@@ -4,6 +4,11 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
        					   http://dev.meisen.net/sbconfigurator/ns http://dev.meisen.net/xsd/sbconfigurator/sbconfigurator-ns.xsd">
 
+  <!-- define a loader to load additional server settings -->
+  <sbc:loader id="serverConfigurationLoader" validationEnabled="true" beanOverridingAllowed="false" loadFromClassPath="true" loadFromWorkingDir="false"
+              selector="${server.settings.selector}" 
+              xslt="net/meisen/general/server/settings/serverConfigToSpringContext.xslt" />
+
   <!-- load some other beans into the configuration -->
   <sbc:loader id="serverBeans" selector="serverBeans.xml" />
 </beans>
