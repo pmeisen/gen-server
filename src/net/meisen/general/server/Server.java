@@ -51,7 +51,7 @@ public class Server {
 	private Thread serverThread;
 
 	private boolean started = false;
-	private Throwable startException = null;
+	private Throwable asyncException = null;
 
 	/**
 	 * Hide the default constructor, please use {@link Server#createServer()} to
@@ -77,7 +77,7 @@ public class Server {
 					try {
 						Server.this.start();
 					} catch (final Throwable e) {
-						startException = e;
+						asyncException = e;
 					}
 				}
 			};
@@ -95,7 +95,7 @@ public class Server {
 	 * Wait until the server started
 	 */
 	public void waitForStart() {
-		
+
 		// wait for the server to start
 		while (isStarting()) {
 			try {
@@ -115,7 +115,7 @@ public class Server {
 							"Unable to start the server because of an exception.",
 							t);
 				}
-				
+
 				exceptionRegistry.throwException(
 						ServerInitializeException.class, 1004, t.getMessage());
 			}
@@ -229,22 +229,23 @@ public class Server {
 	}
 
 	/**
-	 * Checks if the asynchronous start failed.
+	 * Checks if the asynchronous server failed.
 	 * 
-	 * @return {@code true} if the start failed, otherwise {@code false}
+	 * @return {@code true} if the server failed in asynchronous mode, otherwise
+	 *         {@code false}
 	 */
 	public boolean isFailed() {
-		return startException != null;
+		return asyncException != null;
 	}
 
 	/**
-	 * Gets the exception thrown when starting, if one occurred, otherwise
-	 * {@code false}.
+	 * Gets the exception thrown by asynchronous server, if one occurred,
+	 * otherwise {@code null}.
 	 * 
 	 * @return the exception thrown when starting
 	 */
 	public Throwable getFailedException() {
-		return startException;
+		return asyncException;
 	}
 
 	/**
