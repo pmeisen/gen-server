@@ -7,6 +7,7 @@ import static org.junit.Assert.assertTrue;
 import java.net.Socket;
 import java.util.Set;
 
+import net.meisen.general.server.api.impl.exceptions.BaseListenerException;
 import net.meisen.general.server.testutilities.TestHelper;
 
 import org.junit.Test;
@@ -123,18 +124,21 @@ public class TestServer {
 		final Server server1 = TestHelper
 				.getServer("sbconfigurator-core-useSystemProperties.xml");
 		server1.startAsync();
-		while (server1.isStarting()) {
-			Thread.sleep(50);
-		}
+		server1.waitForStart();
 		assertTrue(server1.isRunning());
 		assertFalse(server1.isFailed());
 
 		final Server server2 = TestHelper
 				.getServer("sbconfigurator-core-useSystemProperties.xml");
 		server2.startAsync();
-		while (server2.isStarting()) {
-			Thread.sleep(50);
+
+		boolean exceptionThrown = false;
+		try {
+			server2.waitForStart();
+		} catch (final BaseListenerException e) {
+			exceptionThrown = true;
 		}
+		assertTrue(exceptionThrown);
 		assertFalse(server2.isRunning());
 		assertTrue(server2.isFailed());
 	}

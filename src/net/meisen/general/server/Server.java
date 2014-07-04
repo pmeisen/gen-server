@@ -11,6 +11,7 @@ import net.meisen.general.sbconfigurator.helper.SpringHelper;
 import net.meisen.general.server.api.IListener;
 import net.meisen.general.server.api.IServerSettings;
 import net.meisen.general.server.api.IServerSettingsManager;
+import net.meisen.general.server.api.impl.exceptions.BaseListenerException;
 import net.meisen.general.server.exceptions.ServerInitializeException;
 import net.meisen.general.server.settings.listener.ListenerFactory;
 import net.meisen.general.server.settings.pojos.Connector;
@@ -119,6 +120,8 @@ public class Server {
 			final Throwable t = getFailedException();
 			if (t instanceof ServerInitializeException) {
 				throw (ServerInitializeException) t;
+			} else if (t instanceof BaseListenerException) {
+				throw (BaseListenerException) t;
 			} else {
 				if (LOG.isErrorEnabled()) {
 					LOG.error(
