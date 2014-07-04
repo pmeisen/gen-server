@@ -78,6 +78,16 @@ public class Server {
 						Server.this.start();
 					} catch (final Throwable e) {
 						asyncException = e;
+
+						/*
+						 * Log the message if the server is running, it might be
+						 * important for investigation.
+						 */
+						if (LOG.isErrorEnabled() && isRunning()) {
+							LOG.error(
+									"Exception in asynchronous mode detected.",
+									e);
+						}
 					}
 				}
 			};
