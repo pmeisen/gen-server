@@ -49,8 +49,9 @@ public class Server {
 	private List<IListener> listeners;
 
 	private Thread serverThread;
-	
+
 	private boolean started = false;
+	private Throwable startException = null;
 
 	/**
 	 * Hide the default constructor, please use {@link Server#createServer()} to
@@ -73,7 +74,11 @@ public class Server {
 
 				@Override
 				public void run() {
-					Server.this.start();
+					try {
+						Server.this.start();
+					} catch (final Throwable e) {
+						startException = e;
+					}
 				}
 			};
 			serverThread.setName("ServerMainThread");
@@ -170,7 +175,7 @@ public class Server {
 
 			// set the started flag
 			this.started = true;
-			
+
 			// let's wait for the thread
 			try {
 				serverThread.wait();
@@ -180,6 +185,35 @@ public class Server {
 				}
 			}
 		}
+	}
+
+	/**
+	 * Check if the server is still starting.
+	 * 
+	 * @return {@code true} if the server is still starting, otherwise
+	 *         {@code false}
+	 */
+	public boolean isStarting() {
+		return !isFailed() && !isRunning();
+	}
+
+	/**
+	 * Checks if the asynchronous start failed.
+	 * 
+	 * @return {@code true} if the start failed, otherwise {@code false}
+	 */
+	public boolean isFailed() {
+		return startException != null;
+	}
+
+	/**
+	 * Gets the exception thrown when starting, if one occurred, otherwise
+	 * {@code false}.
+	 * 
+	 * @return the exception thrown when starting
+	 */
+	public Throwable getFailedException() {
+		return startException;
 	}
 
 	/**

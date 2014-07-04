@@ -108,4 +108,34 @@ public class TestServer {
 		}
 		assertTrue(exception);
 	}
+
+	/**
+	 * Tests the exception handling when running asynchronously.
+	 * 
+	 * @throws InterruptedException
+	 */
+	@Test
+	public void testBoundSocketException() throws InterruptedException {
+		// we just want to load the nothing so define an invalid filename
+		System.setProperty("server.settings.selector", "mockedBaseListener.xml");
+
+		// get and start the server
+		final Server server1 = TestHelper
+				.getServer("sbconfigurator-core-useSystemProperties.xml");
+		server1.startAsync();
+		while (server1.isStarting()) {
+			Thread.sleep(50);
+		}
+		assertTrue(server1.isRunning());
+		assertFalse(server1.isFailed());
+
+		final Server server2 = TestHelper
+				.getServer("sbconfigurator-core-useSystemProperties.xml");
+		server2.startAsync();
+		while (server2.isStarting()) {
+			Thread.sleep(50);
+		}
+		assertFalse(server2.isRunning());
+		assertTrue(server2.isFailed());
+	}
 }
