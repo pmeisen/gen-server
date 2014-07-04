@@ -92,6 +92,37 @@ public class Server {
 	}
 
 	/**
+	 * Wait until the server started
+	 */
+	public void waitForStart() {
+		
+		// wait for the server to start
+		while (isStarting()) {
+			try {
+				Thread.sleep(50);
+			} catch (final InterruptedException e) {
+				// ignore it
+			}
+		}
+
+		if (isFailed()) {
+			final Throwable t = getFailedException();
+			if (t instanceof ServerInitializeException) {
+				throw (ServerInitializeException) t;
+			} else {
+				if (LOG.isErrorEnabled()) {
+					LOG.error(
+							"Unable to start the server because of an exception.",
+							t);
+				}
+				
+				exceptionRegistry.throwException(
+						ServerInitializeException.class, 1004, t.getMessage());
+			}
+		}
+	}
+
+	/**
 	 * Starts the <code>Server</code> in the current <code>Thread</code> if no
 	 * other <code>serverThread</code> is specified.
 	 */
