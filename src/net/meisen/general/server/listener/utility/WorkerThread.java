@@ -48,14 +48,12 @@ public abstract class WorkerThread extends Thread implements Closeable {
 	@Override
 	public void close() {
 		final Socket input = getSocket();
-		
+
 		if (input != null) {
-			if (!input.isClosed()) {
-				try {
-					input.close();
-				} catch (final IOException e) {
-					// we cannot do anything
-				}
+			try {
+				input.close();
+			} catch (final IOException e) {
+				// we cannot do anything
 			}
 		}
 	}
