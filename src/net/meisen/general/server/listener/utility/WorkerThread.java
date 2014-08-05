@@ -50,10 +50,12 @@ public abstract class WorkerThread extends Thread implements Closeable {
 		final Socket input = getSocket();
 
 		if (input != null) {
-			try {
-				input.close();
-			} catch (final IOException e) {
-				// we cannot do anything
+			if (!input.isClosed()) {
+				try {
+					input.close();
+				} catch (final IOException e) {
+					// we cannot do anything
+				}
 			}
 		}
 	}
