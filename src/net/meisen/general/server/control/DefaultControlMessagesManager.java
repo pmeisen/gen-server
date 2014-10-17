@@ -47,6 +47,13 @@ public class DefaultControlMessagesManager implements IControlMessagesManager {
 	 */
 	public void addControlMessage(
 			final Class<? extends IControlMessage> controlMessageClazz) {
+		this.addControlMessage(controlMessageClazz, false);
+	}
+
+	@Override
+	public void addControlMessage(
+			final Class<? extends IControlMessage> controlMessageClazz,
+			final boolean override) {
 
 		if (controlMessageClazz == null) {
 			exceptionRegistry.throwException(ControlMessageException.class,
@@ -70,6 +77,14 @@ public class DefaultControlMessagesManager implements IControlMessagesManager {
 			final IControlMessage knownMsg = controlMessages.get(id);
 			if (knownMsg.getClass().equals(controlMessageClazz)) {
 				// nothing to do it was just defined twice
+			} else if (override) {
+				if (LOG.isTraceEnabled()) {
+					LOG.trace("Overriding message with id '" + id
+							+ "' with message of type '" + controlMessageClazz
+							+ "'");
+				}
+
+				controlMessages.put(id, msg);
 			} else if (LOG.isWarnEnabled()) {
 				LOG.warn("Another message with id '" + id
 						+ "' is already added ('"

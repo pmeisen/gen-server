@@ -19,4 +19,17 @@ public interface IControlMessagesManager {
 	 *         <code>ControlMessage</code> exists
 	 */
 	public IControlMessage determineMessage(final String msg);
+
+	/**
+	 * Method to add a new {@code ControlMessage} to the manager.
+	 * 
+	 * @param controlMessageClazz
+	 *            the class of the {@code ControlMessage} to be added
+	 * @param override
+	 *            {@code true} if it's expected that the adding will override
+	 *            another message, otherwise {@code false}
+	 */
+	public void addControlMessage(
+			final Class<? extends IControlMessage> controlMessageClazz,
+			final boolean override);
 }
