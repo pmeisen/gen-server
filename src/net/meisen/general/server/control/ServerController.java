@@ -65,7 +65,7 @@ public class ServerController {
 	 * 
 	 * @return the reply of the server to the sent message
 	 */
-	protected String sendMessage(final String msg) {
+	public String sendMessage(final String msg) {
 		try {
 			final Socket socket = new Socket(host, port);
 			final PrintWriter out = new PrintWriter(socket.getOutputStream(),
