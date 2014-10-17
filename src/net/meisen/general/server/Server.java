@@ -66,9 +66,22 @@ public class Server {
 	}
 
 	/**
-	 * Starts the <code>Server</code> in a new <code>Thread</code>.
+	 * Starts the <code>Server</code> in a new <code>Thread</code>. This method
+	 * will register a shutdown-hook to shutdown the server.
 	 */
 	public void startAsync() {
+		this.startAsync(true);
+	}
+
+	/**
+	 * Starts the <code>Server</code> in the current <code>Thread</code> if no
+	 * other <code>serverThread</code> is specified.
+	 * 
+	 * @param registerShutdownHook
+	 *            {@code true} if the server should register a hook, which shuts
+	 *            the server down, otherwise {@code false}
+	 */
+	public void startAsync(final boolean registerShutdownHook) {
 
 		if (serverThread == null) {
 			serverThread = new Thread() {
@@ -76,7 +89,7 @@ public class Server {
 				@Override
 				public void run() {
 					try {
-						Server.this.start();
+						Server.this.start(registerShutdownHook);
 					} catch (final Throwable e) {
 						asyncException = e;
 
@@ -137,9 +150,22 @@ public class Server {
 
 	/**
 	 * Starts the <code>Server</code> in the current <code>Thread</code> if no
-	 * other <code>serverThread</code> is specified.
+	 * other <code>serverThread</code> is specified. This method will register a
+	 * shutdown-hook to shutdown the server.
 	 */
 	public void start() {
+		start(true);
+	}
+
+	/**
+	 * Starts the <code>Server</code> in the current <code>Thread</code> if no
+	 * other <code>serverThread</code> is specified.
+	 * 
+	 * @param registerShutdownHook
+	 *            {@code true} if the server should register a hook, which shuts
+	 *            the server down, otherwise {@code false}
+	 */
+	public void start(final boolean registerShutdownHook) {
 		final IServerSettings finalServerSettings = getServerSettings();
 
 		// check some pre-conditions
@@ -198,21 +224,23 @@ public class Server {
 			}
 
 			// register the shutdown hook to finish the whole thing gracefully
-			Runtime.getRuntime().addShutdownHook(new Thread() {
+			if (registerShutdownHook) {
+				Runtime.getRuntime().addShutdownHook(new Thread() {
 
-				@Override
-				public void run() {
+					@Override
+					public void run() {
 
-					// check if the server is running and shut it down if so
-					if (Server.this.isRunning()) {
-						if (LOG.isInfoEnabled()) {
-							LOG.info("The server will be shut down because of a ShutdownHook.");
+						// check if the server is running and shut it down if so
+						if (Server.this.isRunning()) {
+							if (LOG.isInfoEnabled()) {
+								LOG.info("The server will be shut down because of a ShutdownHook.");
+							}
+
+							Server.this.shutdown();
 						}
-
-						Server.this.shutdown();
 					}
-				}
-			});
+				});
+			}
 
 			// keep the opened listeners
 			this.listeners = Collections.synchronizedList(listeners);
