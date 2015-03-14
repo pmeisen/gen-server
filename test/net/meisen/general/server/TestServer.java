@@ -83,7 +83,6 @@ public class TestServer {
 	 */
 	@Test
 	public void testSocketClosing() throws Exception {
-		// we just want to load the nothing so define an invalid filename
 		System.setProperty("server.settings.selector", "mockedBaseListener.xml");
 
 		// get and start the server
@@ -117,7 +116,6 @@ public class TestServer {
 	 */
 	@Test
 	public void testBoundSocketException() throws InterruptedException {
-		// we just want to load the nothing so define an invalid filename
 		System.setProperty("server.settings.selector", "mockedBaseListener.xml");
 
 		// get and start the server
