@@ -100,9 +100,10 @@ public class TestServer {
 		server.shutdown();
 
 		// the message should not receive anything
-		boolean exception = false;
+		boolean exception;
 		try {
-			TestHelper.sendMessage("Hello", socket);
+			final String msg = TestHelper.sendMessage("Hello", socket);
+			exception = msg == null;
 		} catch (final Exception e) {
 			exception = true;
 		}
@@ -112,7 +113,7 @@ public class TestServer {
 	/**
 	 * Tests the exception handling when running asynchronously.
 	 * 
-	 * @throws InterruptedException
+	 * @throws InterruptedException if the connection is interrupted
 	 */
 	@Test
 	public void testBoundSocketException() throws InterruptedException {

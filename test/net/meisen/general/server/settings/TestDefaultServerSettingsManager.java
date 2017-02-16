@@ -249,8 +249,8 @@ public class TestDefaultServerSettingsManager {
 		final Extension firstEntry = connector.getExtension("firstEntry");
 		assertEquals(4, firstEntry.getProperties().size());
 		assertEquals(0, firstEntry.getExtensions().size());
-		assertEquals(1, firstEntry.getProperty("first"));
-		assertEquals(2, firstEntry.getProperty("second"));
+		assertEquals(Integer.valueOf(1), firstEntry.getProperty("first"));
+		assertEquals(Integer.valueOf(2), firstEntry.getProperty("second"));
 		assertEquals(true, firstEntry.getProperty("third"));
 		assertEquals(false, firstEntry.getProperty("fourth"));
 

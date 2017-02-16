@@ -5,7 +5,7 @@
   
   <groupId>net.meisen.general</groupId>
   <artifactId>net-meisen-general-server</artifactId>
-  <version>TRUNK</version>
+  <version>TRUNK-SNAPSHOT</version>
   <name>gen-server</name>
   <description>General Server implementation to setup a server</description>
   <packaging>jar</packaging>
@@ -40,6 +40,13 @@
       <artifactId>net-meisen-general-gen-sbconfigurator</artifactId>
       <version>TRUNK-SNAPSHOT</version>
       <classifier>test</classifier>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>4.12</version>
       <scope>test</scope>
     </dependency>
   </dependencies>
