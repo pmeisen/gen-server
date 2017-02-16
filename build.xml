@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 
-<project name="gen-server" default="deploy">
+<project name="gen-server">
 	<include file="../tida-workspace/common-libs/ant-util/util-ant.xml"/>
 
 	<property name="testSuite" value="net.meisen.dissertation.AllTests"/>
@@ -23,5 +23,6 @@
 
 	<target name="04-deploy" depends="02-compile-sources">
 		<build-jar />
+		<build-test-jar />
 	</target>
 </project>
