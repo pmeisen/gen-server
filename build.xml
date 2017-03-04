@@ -3,7 +3,7 @@
 <project name="gen-server">
 	<include file="../tida-workspace/common-libs/ant-util/util-ant.xml"/>
 
-	<property name="testSuite" value="net.meisen.dissertation.AllTests"/>
+	<property name="testSuite" value="net.meisen.general.server.AllTests"/>
 
 	<target name="01-resolve-dependencies">
 		<resolve-dependencies/>
